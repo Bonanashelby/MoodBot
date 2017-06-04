@@ -15,7 +15,7 @@
 
 # Team Members:
  * Casey O'Kane - 
- * Alex Short - 
+ * Alex Short - ajshort2010@hotmail.com
  * Kurt Maurer - 
  * Anna Shelby - bonanashelby@gmail.com
 
