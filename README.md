@@ -14,7 +14,7 @@
 * Show users history - month to month, happiest tweet/saddest tweet, graph the data to show the analysis 
 
 # Team Members:
- * Casey O'Kane - 
+ * Casey O'Kane - okanecasey@gmail.com
  * Alex Short - ajshort2010@hotmail.com
  * Kurt Maurer - 
  * Anna Shelby - bonanashelby@gmail.com
