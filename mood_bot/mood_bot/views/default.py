@@ -5,7 +5,6 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.security import remember, forget
 from mood_bot.security import check_credentials
-import datetime
 
 
 @view_config(route_name='home_view', renderer='../templates/home.jinja2')
@@ -38,7 +37,11 @@ def logout(request):
 
 @view_config(route_name='app_view', renderer='../templates/app.jinja2')
 def app_view(request):
-    return {}
+    if request.method == "GET":
+        return {}
+    if request.method == "POST":
+        text = request.POST['body']
+        #Need to 
 
 
 @view_config(route_name='results_view', renderer='../templates/results.jinja2')
