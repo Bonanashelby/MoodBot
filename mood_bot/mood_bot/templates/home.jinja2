@@ -1,8 +1,10 @@
 {% extends 'layout.jinja2' %}
 
 {% block content %}
-<h1>Testing our Home View</h1>
-    <form method="GET">
-        <a href="{{ request.route_url('app_view') }}"><input type="button" value="Take it App"></a>
-    </form>
+
+	<div class="jumbotron">
+		<h1>Mood Bot</h1>
+		<a class="btn btn-success btn-lg" href="/app">Let me tell you how you're feeling!</a>
+	</div>
+  
 {% endblock %}
