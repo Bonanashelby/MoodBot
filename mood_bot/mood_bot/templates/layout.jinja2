@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+  <a href="{{ request.route_url('home_view') }}"><button>Home</button></a>
+  <a href="{{ request.route_url('login') }}"><button>Login</button></a>
+  <a href="{{ request.route_url('logout') }}"><button>Logout</button></a>
+<h1>The MoodBot App</h1>
+{% block content %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,3 @@
+[run]
+source = mood_bot
+omit = mood_bot/test*
