@@ -1,22 +1,15 @@
 {% extends"layout.jinja2" %}
 {% block content %}
-
+<h1>Tell me your thoughts and feelings...</h1>
+<p>Give Mood Bot your feelings and thoughts, and it will return what it thinks you're feeling as well as a link to enhance your mood. Tell it whatever you want!</p>
   <form method="POST">
     <div class="row">
-        <div class="form-group col-xs-4">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" name="username" id="username" required/>
+        <div class="form-group">
+            <textarea class="form-control" rows="6" placeholder="Here are my feelings, Mood Bot."/>
+            </textarea>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="form-group col-xs-4">
-            <label for="passwor">Password</label>
-            <input type="password" class="form-control" name="password" pattern="[\w]+" required/>
-        </div>
-    </div>
-    
-        <button type="submit" class="btn">Login</button>
+    </div>    
+        <button type="submit" class="btn btn-success">Make me feel better!</button>
 </form>
 
 
