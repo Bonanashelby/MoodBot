@@ -51,5 +51,5 @@ def results_view(request):
 
 @view_config(route_name='about_view', renderer='../templates/about.jinja2')
 def about_view(request):
-    
-    pass
+
+    return {'message': 'This is our about page. It will have information about us on it.'}
