@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title></title>
+    <title>{% title block %}{% endblock %}</title>
 </head>
 <body>
-  <a href="{{ request.route_url('home_view') }}"><button>Home</button></a>
-  <a href="{{ request.route_url('login') }}"><button>Login</button></a>
-  <a href="{{ request.route_url('logout') }}"><button>Logout</button></a>
+    <a href="{{ request.route_url('home_view') }}"><button>Home</button></a>
+        {% if request.authenticated_userid %}
+    <a href="{{ request.route_url('logout') }}"><button>Logout</button></a>
+        {% else %}
+    <a href="{{ request.route_url('login') }}"><button>Login</button></a>
+        {% endif %}
 <h1>The MoodBot App</h1>
 {% block content %}{% endblock %}
 </body>
