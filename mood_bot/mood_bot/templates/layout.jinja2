@@ -9,8 +9,8 @@
 	<div class="container">
 		<header class="page-header">
 		<ul class="nav nav-pills pull-left">
-		  <li class="active"><a href="{{ request.route_url('home_view') }}">Home</a></li>
-		  <li><a href="{{ request.route_url('about_view') }}">About Us</a></li>
+		  <li class="active"><a href="/">Home</a></li>
+		  <li><a href="/about">About Us</a></li>
 	      {% if request.authenticated_userid %}
 	      <li><a class="blog-nav-item" href="/logout">Logout</a></li>
 	      {% else %}

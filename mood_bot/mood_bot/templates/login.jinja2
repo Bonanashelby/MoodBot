@@ -5,16 +5,20 @@
 
 <h2>Login</h2>
 <form method="POST">
-    <div class="field">
-        <label for="username">Username</label>
-        <input type="text" name="username" id="username" required/>
+    <div class="row">
+        <div class="form-group col-xs-4">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" name="username" id="username" required/>
+        </div>
     </div>
-    <div class="field">
-        <label for="password">Password</label>
-        <input type="password" name="password" pattern="[\w]+" required/>
+
+    <div class="row">
+        <div class="form-group col-xs-4">
+            <label for="passwor">Password</label>
+            <input type="password" class="form-control" name="password" pattern="[\w]+" required/>
+        </div>
     </div>
-    <div class="control_row">
-        <input type="submit" name="Login" value="Login"/>
-    </div>
+    
+        <button type="submit" class="btn">Login</button>
 </form>
-{% endblock%}
+{% endblock %}
