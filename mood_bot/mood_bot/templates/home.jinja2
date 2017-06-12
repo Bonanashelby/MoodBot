@@ -2,5 +2,7 @@
 
 {% block content %}
 <h1>Testing our Home View</h1>
-
+    <form method="GET">
+        <a href="{{ request.route_url('app_view') }}"><input type="button" value="Take it App"></a>
+    </form>
 {% endblock %}
