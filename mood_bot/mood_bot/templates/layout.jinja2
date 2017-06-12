@@ -4,9 +4,24 @@
   <title></title>
 </head>
 <body>
-  <a href="{{ request.route_url('home_view') }}"><button>Home</button></a>
-  <a href="{{ request.route_url('login') }}"><button>Login</button></a>
-  <a href="{{ request.route_url('logout') }}"><button>Logout</button></a>
+	<div class="container">
+		<header class="page-header">
+		<ul class="nav nav-pills pull-right">
+		  <li class="active"><a href="{{ request.route_url('home_view') }}">Home</a></li>
+		  <li><a href="{{ request.route_url('about_view') }}">About Us</a></li>
+	      {% if request.authenticated_userid %}
+	      <li><a class="blog-nav-item" href="/logout">Logout</a></li>
+	      {% else %}
+	      <li><a href="/login">Login</a></li>
+	      {% endif %}
+	    </ul>
+		</header>
+	</div>
+
+	<div class="jumbotron">
+		<h1></h1>
+	</div>
+
 <h1>The MoodBot App</h1>
 {% block content %}{% endblock %}
 </body>
