@@ -54,8 +54,15 @@ def about_view(request):
 @view_config(route_name="results", renderer='../templates/results.jinja2')
 def result_view(request):
     """View of the result route."""
-    results = request.dbsession.query(Moodbot).all()
-    return {"results": results}
+    the_id = int(request.matchdict['id'])
+    results = request.dbsession.query(Moodbot).get(the_id)
+    if results:
+        return {
+            "score": results.score,
+            "explain_score": results.explain_score
+        }
+    else:
+        raise HTTPNotFound
 
 
 @view_config(route_name='entry', renderer='../templates/entry.jinja2')
