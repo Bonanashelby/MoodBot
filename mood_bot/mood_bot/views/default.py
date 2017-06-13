@@ -5,7 +5,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.security import remember, forget
 from mood_bot.security import check_credentials
-from mood_bot.models.mymodel import Moodbot
+from mood_bot.models.mymodel import Moodbot, User
 
 
 @view_config(route_name='home_view', renderer='../templates/home.jinja2')
