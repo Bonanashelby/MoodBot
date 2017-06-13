@@ -5,10 +5,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.security import remember, forget
 from mood_bot.security import check_credentials
-import datetime
-import json
-import requests
-
+from mood_bot.models.mymodel import Moodbot
 
 
 @view_config(route_name='home_view', renderer='../templates/home.jinja2')
@@ -32,6 +29,7 @@ def login(request):
             return HTTPFound(location=request.route_url('home_view'), headers=headers)
         return {'error': 'Invalid username or password.'}
 
+
 @view_config(route_name='logout', renderer='../templates/logout.jinja2')
 def logout(request):
     """Clear the headers and allow for logout then route home."""
@@ -45,17 +43,18 @@ def app_view(request):
         return {}
     if request.method == "POST":
         text = request.POST['body']
-        #Need to 
-
-
-@view_config(route_name='results', renderer='../templates/results.jinja2')
-pass
 
 
 @view_config(route_name='about_view', renderer='../templates/about.jinja2')
 def about_view(request):
-
     pass
+
+
+@view_config(route_name="results", renderer='../templates/results.jinja2')
+def result_view(request):
+    """View of the result route."""
+    results = request.dbsession.query(Moodbot).all()
+    return {"results": results}
 
 
 @view_config(route_name='entry', renderer='../templates/entry.jinja2')
@@ -68,4 +67,3 @@ def test_api_stuff(request):
         payload = {'text': text_body}
         response = requests.request('POST', url, data=payload, headers=None)
         return {'response_text': response.text}
-

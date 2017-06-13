@@ -1,18 +1,21 @@
+"""Our models structure."""
+
 from sqlalchemy import (
     Column,
     Index,
     Integer,
-    Text,
+    Unicode,
+    Float
 )
 
 from .meta import Base
 
 
-class MyModel(Base):
+class Moodbot(Base):
+    """The class for our database structure for our results."""
+
     __tablename__ = 'models'
     id = Column(Integer, primary_key=True)
-    name = Column(Text)
-    value = Column(Integer)
-
-
-Index('my_index', MyModel.name, unique=True, mysql_length=255)
+    body = Column(Unicode)
+    score = Column(Float)
+    explain_score = Column(Unicode)
