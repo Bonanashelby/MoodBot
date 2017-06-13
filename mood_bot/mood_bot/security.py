@@ -5,6 +5,10 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.security import Authenticated, Allow
 from passlib.apps import custom_app_context as context
 from pyramid.session import SignedCookieSessionFactory
+from mood_bot.models.mymodel import User
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import exists
 
 
 class MyRoot(object):
@@ -20,16 +24,21 @@ class MyRoot(object):
 
 def check_credentials(username, password):
     """Check credentials of a new user.
-
     Return True if it checks out; otherwise return False."""
-    stored_username = os.environ.get('AUTH_USERNAME', '')
-    stored_password = os.environ.get('AUTH_PASSWORD', '')
+    engine = create_engine('postgres://kurtrm:hofbrau@localhost:5432/mood_bot')
+    Session = sessionmaker()
+    Session.configure(bind=engine)
+    session = Session()
     is_authenticated = False
-    if stored_username and stored_password:
-        if username == stored_username:
-            if context.verify(password, stored_password):
-                is_authenticated = True
-    return is_authenticated
+    import pdb; pdb.set_trace()
+    stored_username = session.query(User.username).filter(User.username==username)
+    username_existence = session.query(stored_username.exists()).scalar()
+    if not username_existence:
+        return is_authenticated
+    stored_username = stored_username.one_or_none()
+    stored_password = session.query(User.password).filter(User.username==stored_username).one_or_none()
+    if stored_password == password:
+        return is_authenticated
 
 
 def includeme(config):

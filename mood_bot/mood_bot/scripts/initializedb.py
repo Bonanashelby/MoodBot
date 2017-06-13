@@ -17,7 +17,8 @@ from ..models import (
     get_session_factory,
     get_tm_session,
 )
-from ..models import Moodbot, User
+from mood_bot.models import Moodbot
+from mood_bot.models.mymodel import User
 
 
 RESULTS = [

@@ -26,5 +26,5 @@ class User(Base):
 
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
-    username =Column(Unicode)
+    username =Column(Unicode, unique=True)
     password = Column(Unicode)
