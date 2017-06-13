@@ -6,11 +6,12 @@ from pyramid.httpexceptions import HTTPNotFound
 from pyramid.security import remember, forget
 from mood_bot.security import check_credentials
 from mood_bot.models.mymodel import Moodbot
+import requests
 
 
 @view_config(route_name='home_view', renderer='../templates/home.jinja2')
 def home_view(request):
-    """Thy willst generate an abode leaflet. """
+    """Thy willst generate an abode leaflet."""
     return {}
     if request.method == "GET":
         return HTTPFound(location=request.route_url("app_view"), headers=None)
