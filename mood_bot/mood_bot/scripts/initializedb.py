@@ -17,7 +17,8 @@ from ..models import (
     get_session_factory,
     get_tm_session,
 )
-from ..models import Moodbot
+from mood_bot.models import Moodbot
+from mood_bot.models.mymodel import User
 
 
 RESULTS = [
@@ -34,7 +35,7 @@ def usage(argv):
     """."""
     cmd = os.path.basename(argv[0])
     print('usage: %s <config_uri> [var=value]\n'
-          '(example: "%s development.ini")' % (cmd, cmd))
+          '(exMample: "%s development.ini")' % (cmd, cmd))
     sys.exit(1)
 
 
@@ -68,3 +69,4 @@ def main(argv=sys.argv):
 
         model = Moodbot()
         dbsession.add(model)
+        dbsession.add(User())

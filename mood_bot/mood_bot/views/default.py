@@ -4,8 +4,8 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.security import remember, forget
-from mood_bot.security import check_credentials
-from mood_bot.models.mymodel import Moodbot
+from mood_bot.security import check_credentials, hash_password
+from mood_bot.models.mymodel import Moodbot, User
 import requests
 
 
@@ -76,3 +76,31 @@ def test_api_stuff(request):
         payload = {'text': text_body}
         response = requests.request('POST', url, data=payload, headers=None)
         return {'response_text': response.text}
+
+
+@view_config(route_name='registration', renderer='../templates/register.jinja2')
+def register(request):
+    """Set the login route and view."""
+    if request.method == "GET":
+        return {}
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        password_check = request.POST['password-check']
+        check_username = request.dbsession.query(User.username).filter(User.username == username).one_or_none()
+        if not username or not password:
+            return {'error': 'Please provide a username and password.'}
+        if check_username is None:
+            if password == password_check:
+                new_user = User(
+                    username=username,
+                    password=hash_password(password)
+                )
+                request.dbsession.add(new_user)
+                return HTTPFound(
+                    location=request.route_url('login'),
+                    detail='Registration successful!'
+                )
+            else:
+                return {'error': 'Passwords do not match.'}
+        return {'error': 'Username already in use.'}

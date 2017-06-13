@@ -5,11 +5,11 @@ from pyramid import testing
 
 
 import pytest
-from expense_tracker.models import (
+from mood_bot.models import (
     Moodbot,
     get_tm_session,
 )
-from mood_bot.models.meta import Moodbot
+from mood_bot.models.meta import Base
 
 
 @pytest.fixture(scope="session")

@@ -19,3 +19,12 @@ class Moodbot(Base):
     body = Column(Unicode)
     score = Column(Float)
     explain_score = Column(Unicode)
+
+
+class User(Base):
+    """Model for our users."""
+
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    username =Column(Unicode, unique=True)
+    password = Column(Unicode)
