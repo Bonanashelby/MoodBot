@@ -1,29 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-  <title></title>
+  <title>Mood Bot</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<link rel="stylesheet" href="static/css/my-styles.css">
 </head>
 <body>
-	<div class="container">
-		<header class="page-header">
-		<ul class="nav nav-pills pull-left">
-		  <li class="active"><a href="{{ request.route_url('home_view') }}">Home</a></li>
-		  <li><a href="{{ request.route_url('about_view') }}">About Us</a></li>
-	      {% if request.authenticated_userid %}
-	      <li><a class="blog-nav-item" href="/logout">Logout</a></li>
-	      {% else %}
-	      <li><a href="/login">Login</a></li>
-	      {% endif %}
-	    </ul>
-		</header>
+
+	<div class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</button>
+			<a class="navbar-brand text-muted" href="/">Mood Bot</a>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav navbar-right">
+				  <li><a href="/">Home</a></li>
+				  <li><a href="/about">About Us</a></li>
+			      {% if request.authenticated_userid %}
+			      <li><a class="blog-nav-item" href="/logout">Logout</a></li>
+			      {% else %}
+			      <li><a href="/login">Login</a></li>
+			      {% endif %}
+			    </ul>
+			</div>
+		</div>
 	</div>
+
+	<div class="container">
 	{% block content %}
 	{% endblock %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	</div>
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
 </body>
 </html>
 

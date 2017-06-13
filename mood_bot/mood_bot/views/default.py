@@ -5,12 +5,10 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.security import remember, forget
 from mood_bot.security import check_credentials
-<<<<<<< HEAD
 import datetime
 import json
 import requests
-=======
->>>>>>> 0f255a77688431afa8ac64de3dc3002878d7c9c1
+
 
 
 @view_config(route_name='home_view', renderer='../templates/home.jinja2')
@@ -56,6 +54,7 @@ pass
 
 @view_config(route_name='about_view', renderer='../templates/about.jinja2')
 def about_view(request):
+
     pass
 
 
@@ -69,3 +68,4 @@ def test_api_stuff(request):
         payload = {'text': text_body}
         response = requests.request('POST', url, data=payload, headers=None)
         return {'response_text': response.text}
+
