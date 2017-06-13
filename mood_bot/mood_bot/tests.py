@@ -5,7 +5,7 @@ from pyramid import testing
 
 
 import pytest
-from expense_tracker.models import (
+from mood_bot.models import (
     Moodbot,
     get_tm_session,
 )
