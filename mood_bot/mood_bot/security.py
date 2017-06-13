@@ -29,16 +29,18 @@ def check_credentials(username, password):
     Session = sessionmaker()
     Session.configure(bind=engine)
     session = Session()
-    is_authenticated = False
-    import pdb; pdb.set_trace()
     stored_username = session.query(User.username).filter(User.username==username)
     username_existence = session.query(stored_username.exists()).scalar()
     if not username_existence:
-        return is_authenticated
-    stored_username = stored_username.one_or_none()
-    stored_password = session.query(User.password).filter(User.username==stored_username).one_or_none()
-    if stored_password == password:
-        return is_authenticated
+        return False
+    stored_username = stored_username.first().username
+    stored_password = session.query(User.password).filter(User.username==stored_username).first().password
+    return context.verify(password, stored_password)
+
+
+def hash_password(password):
+    """Hash the new user's password."""
+    return context.hash(password)
 
 
 def includeme(config):

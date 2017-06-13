@@ -4,7 +4,7 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.security import remember, forget
-from mood_bot.security import check_credentials
+from mood_bot.security import check_credentials, hash_password
 from mood_bot.models.mymodel import Moodbot, User
 
 
@@ -93,7 +93,7 @@ def register(request):
             if password == password_check:
                 new_user = User(
                     username=username,
-                    password=password
+                    password=hash_password(password)
                 )
                 request.dbsession.add(new_user)
                 return HTTPFound(
