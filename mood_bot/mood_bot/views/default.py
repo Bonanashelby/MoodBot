@@ -75,3 +75,31 @@ def test_api_stuff(request):
         payload = {'text': text_body}
         response = requests.request('POST', url, data=payload, headers=None)
         return {'response_text': response.text}
+
+
+@view_config(route_name='registration', renderer='../templates/register.jinja2')
+def login(request):
+    """Set the login route and view."""
+    if request.method == "GET":
+        return {}
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        password_check = request.POST['password-check']
+        check_username = request.dbsession.query(User).get(username)
+        if not username or not password:
+            return {'error': 'Please provide a username and password.'}
+        if check_username is None:
+            if password == password_check:
+                new_user = User(
+                    username = username,
+                    password = password
+                )
+                request.dbsession.add(new_user)
+                return HTTPFound(
+                    location=request.route_url('login'),
+                    detail='Registration successful!'
+                )
+            else:
+                return {'error': 'Passwords do not match.'}
+            return {'error': 'Username already in use.'}
