@@ -1,13 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
+
   <title></title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
-  <a href="{{ request.route_url('home_view') }}"><button>Home</button></a>
-  <a href="{{ request.route_url('login') }}"><button>Login</button></a>
-  <a href="{{ request.route_url('logout') }}"><button>Logout</button></a>
-<h1>The MoodBot App</h1>
-{% block content %}{% endblock %}
+	<div class="container">
+		<header class="page-header">
+		<ul class="nav nav-pills pull-left">
+		  <li class="active"><a href="{{ request.route_url('home_view') }}">Home</a></li>
+		  <li><a href="{{ request.route_url('about_view') }}">About Us</a></li>
+	      {% if request.authenticated_userid %}
+	      <li><a class="blog-nav-item" href="/logout">Logout</a></li>
+	      {% else %}
+	      <li><a href="/login">Login</a></li>
+	      {% endif %}
+	    </ul>
+		</header>
+	</div>
+	{% block content %}
+	{% endblock %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
 </body>
 </html>
+
+

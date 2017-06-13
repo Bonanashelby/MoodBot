@@ -5,40 +5,57 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.security import remember, forget
 from mood_bot.security import check_credentials
+<<<<<<< HEAD
 import datetime
 import json
 import requests
+=======
+>>>>>>> 0f255a77688431afa8ac64de3dc3002878d7c9c1
 
 
 @view_config(route_name='home_view', renderer='../templates/home.jinja2')
 def home_view(request):
-    return {
-        'test': 'Testing'
-    }
+    """Thy willst generate an abode leaflet. """
+    return {}
+    if request.method == "GET":
+        return HTTPFound(location=request.route_url("app_view"), headers=None)
 
 
 @view_config(route_name='login', renderer='../templates/login.jinja2')
-def login():
-    pass
-
+def login(request):
+    """Set the login route and view."""
+    if request.method == "GET":
+        return {}
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        if check_credentials(username, password):
+            headers = remember(request, username)
+            return HTTPFound(location=request.route_url('home_view'), headers=headers)
+        return {'error': 'Invalid username or password.'}
 
 @view_config(route_name='logout', renderer='../templates/logout.jinja2')
-def logout():
-    pass
+def logout(request):
+    """Clear the headers and allow for logout then route home."""
+    headers = forget(request)
+    return HTTPFound(location=request.route_url('home_view'), headers=headers)
 
 
 @view_config(route_name='app_view', renderer='../templates/app.jinja2')
-def app_view():
-    pass
+def app_view(request):
+    if request.method == "GET":
+        return {}
+    if request.method == "POST":
+        text = request.POST['body']
+        #Need to 
 
 
 @view_config(route_name='results', renderer='../templates/results.jinja2')
-def results_view(request):
-    pass
+pass
 
 
 @view_config(route_name='about_view', renderer='../templates/about.jinja2')
-def about_view():
+def about_view(request):
     pass
 
 
