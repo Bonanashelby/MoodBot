@@ -2,4 +2,5 @@
 set -e
 cd mood_bot
 python setup.py develop
+intializedb production.ini
 python runapp.py
