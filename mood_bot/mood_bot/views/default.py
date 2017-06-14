@@ -6,6 +6,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from pyramid.security import remember, forget
 from mood_bot.security import check_credentials
 from mood_bot.models.mymodel import Moodbot
+import mood_bot.live_tweets as live_tweets
 import requests
 
 
@@ -51,7 +52,6 @@ def about_view(request):
     return {'message': 'Info about us.'}
 
 
-
 @view_config(route_name="results", renderer='../templates/results.jinja2')
 def result_view(request):
     """View of the result route."""
@@ -76,3 +76,14 @@ def test_api_stuff(request):
         payload = {'text': text_body}
         response = requests.request('POST', url, data=payload, headers=None)
         return {'response_text': response.text}
+
+
+@view_config(route_name='tweets', renderer='../templates/tweets.jinja2')
+def tweets_view(request):
+    """Generate a live tweet view based on subject."""
+    if request.method == "GET":
+        return {}
+    if request.method == "POST":
+        twitter_subject = request.POST['subject']
+        tweet_stream = live_tweets.text_stream(twitter_subject)
+        return {'tweet_stream': tweet_stream}

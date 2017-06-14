@@ -8,3 +8,4 @@ def includeme(config):
     config.add_route('logout', '/logout')
     config.add_route('security', '/security')
     config.add_route('entry', '/entry')
+    config.add_route('tweets', '/live_tweets')
