@@ -47,11 +47,11 @@ def db_session(configuration, request):
     SessionFactory = configuration.registry["dbsession_factory"]
     session = SessionFactory()
     engine = session.bind
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
     def teardown():
         session.transaction.rollback()
-        Base.metadata.drop_all(engine)
 
     request.addfinalizer(teardown)
     return session
@@ -110,14 +110,14 @@ def test_login_error(dummy_request):
     assert response == {'error': 'Invalid username or password.'}
 
 
-# def test_login_redirects_to_home_view(dummy_request):
-#     """Test that login redirects to the home page after login."""
-#     from mood_bot.views.default import login
-#     dummy_request.method = "POST"
-#     data_dict = {'username': 'kurtykurt', 'password': 'kurtkurt'}
-#     dummy_request.POST = data_dict
-#     response = login(dummy_request)
-#     assert response.status_code == 302 
+def test_login_redirects_to_home_view(dummy_request):
+    """Test that login redirects to the home page after login."""
+    from mood_bot.views.default import login
+    dummy_request.method = "POST"
+    data_dict = {'username': 'kurtykurt', 'password': 'kurtkurt'}
+    dummy_request.POST = data_dict
+    response = login(dummy_request)
+    assert response.status_code == 302 
 
 
 def test_about_view_returns_response():
