@@ -20,7 +20,8 @@ requires = [
     'pyramid_ipython',
     'ipython',
     'psycopg2',
-    'passlib'
+    'passlib',
+    'requests'
 ]
 
 tests_require = [
