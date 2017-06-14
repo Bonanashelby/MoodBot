@@ -43,39 +43,17 @@ def app_view(request):
     if request.method == "GET":
         return {}
     if request.method == "POST":
-        text = request.POST['body']
-
-
-@view_config(route_name='about_view', renderer='../templates/about.jinja2')
-def about_view(request):
-    return {'message': 'Info about us.'}
-
-
-
-@view_config(route_name="results", renderer='../templates/results.jinja2')
-def result_view(request):
-    """View of the result route."""
-    the_id = int(request.matchdict['id'])
-    results = request.dbsession.query(Moodbot).get(the_id)
-    if results:
-        return {
-            "score": results.score,
-            "explain_score": results.explain_score
-        }
-    else:
-        raise HTTPNotFound
-
-
-@view_config(route_name='entry', renderer='../templates/entry.jinja2')
-def test_api_stuff(request):
-    if request.method == "GET":
-        return {}
-    if request.method == "POST":
         text_body = request.POST['body']
         url = "http://text-processing.com/api/sentiment/"
         payload = {'text': text_body}
         response = requests.request('POST', url, data=payload, headers=None)
         return {'response_text': response.text}
+
+
+
+@view_config(route_name='about_view', renderer='../templates/about.jinja2')
+def about_view(request):
+    return {'message': 'Info about us.'}
 
 
 @view_config(route_name='registration', renderer='../templates/register.jinja2')

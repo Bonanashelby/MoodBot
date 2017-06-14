@@ -9,6 +9,7 @@ from mood_bot.models.mymodel import User
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
+import os
 
 
 class MyRoot(object):
@@ -25,7 +26,7 @@ class MyRoot(object):
 def check_credentials(username, password):
     """Check credentials of a new user.
     Return True if it checks out; otherwise return False."""
-    engine = create_engine('postgres://kurtrm:hofbrau@localhost:5432/mood_bot')
+    engine = create_engine(os.environ['DATABASE_URL'])
     Session = sessionmaker()
     Session.configure(bind=engine)
     session = Session()
