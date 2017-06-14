@@ -1,0 +1,11 @@
+{% extends 'layout.jinja2' %}
+
+{% block content %}
+    <form method="POST">
+        <input type="text" name="subject" id="subject" placeholder="Type in subject.">
+        <input type="submit" value="Submit">
+    </form>
+    {% if results is defined %}
+        {{results}}
+    {% endif %}
+{% endblock %}

@@ -7,7 +7,7 @@ from pyramid.security import remember, forget
 from mood_bot.security import check_credentials, hash_password
 from mood_bot.models.mymodel import Moodbot, User
 import requests
-
+from ..scripts.twitter import *
 
 @view_config(route_name='home_view', renderer='../templates/home.jinja2')
 def home_view(request):
@@ -82,3 +82,14 @@ def register(request):
             else:
                 return {'error': 'Passwords do not match.'}
         return {'error': 'Username already in use.'}
+
+
+@view_config(route_name='twitter', renderer='../templates/twitter.jinja2')
+def twitter_view(request):
+    """."""
+    if request.method == "GET":
+        return {}
+    if request.method == "POST":
+        user_query = request.POST['subject']
+        results = main(user_query)
+        return {'results': results}
