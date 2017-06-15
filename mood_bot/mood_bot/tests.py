@@ -24,7 +24,7 @@ def configuration(request):
     This configuration will persist for the entire duration of your PyTest run.
     """
     config = testing.setUp(settings={
-        'sqlalchemy.url': 'postgres:///moodybot'
+        'sqlalchemy.url': 'postgres://localhost:5432/moodybot'
     })
     config.include("mood_bot.models")
     config.include("mood_bot.routes")
@@ -47,14 +47,21 @@ def db_session(configuration, request):
     SessionFactory = configuration.registry["dbsession_factory"]
     session = SessionFactory()
     engine = session.bind
-    Base.metadata.drop_all(engine)
+    # Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
     def teardown():
         session.transaction.rollback()
+        Base.metadata.drop_all(engine)
 
     request.addfinalizer(teardown)
     return session
+
+
+@pytest.fixture
+def post_request(dummy_request):
+    dummy_request.method = "POST"
+    return dummy_request
 
 
 @pytest.fixture
@@ -63,25 +70,25 @@ def dummy_request(db_session):
     return testing.DummyRequest(dbsession=db_session)
 
 
-@pytest.fixture(scope="session")
-def testapp(request):
-    """Testapp."""
-    from webtest import TestApp
-    from mood_bot import main
+# @pytest.fixture(scope="session")
+# def testapp(request):
+#     """Testapp."""
+#     from webtest import TestApp
+#     from mood_bot import main
 
-    app = main({}, **{"sqlalchemy.url": "postgres:///moodybot"})
-    testapp = TestApp(app)
+#     app = main({}, **{"sqlalchemy.url": "postgres:///moodybot"})
+#     testapp = TestApp(app)
 
-    SessionFactory = app.registry["dbsession_factory"]
-    engine = SessionFactory().bind
-    Base.metadata.create_all(bind=engine)
+#     SessionFactory = app.registry["dbsession_factory"]
+#     engine = SessionFactory().bind
+#     Base.metadata.create_all(bind=engine)
 
-    def tearDown():
-        Base.metadata.drop_all(bind=engine)
+#     def tearDown():
+#     Base.metadata.drop_all(bind=engine)
 
-    request.addfinalizer(tearDown)
+#     request.addfinalizer(tearDown)
 
-    return testapp
+#     return testapp
 
 
 def test_home_view_returns_response():
@@ -92,36 +99,37 @@ def test_home_view_returns_response():
     assert isinstance(response, dict)
 
 
-def test_login_view_returns_response():
-    """Login view returns a Response object."""
-    from mood_bot.views.default import login
-    request = testing.DummyRequest()
-    response = login(request)
-    assert isinstance(response, dict)
+# def test_login_view_returns_response():
+#     """Login view returns a Response object."""
+#     from mood_bot.views.default import login
+#     request = testing.DummyRequest()
+#     response = login(request)
+#     assert isinstance(response, dict)
 
 
-def test_login_error(dummy_request):
-    """Test error for login."""
-    from mood_bot.views.default import login
-    dummy_request.method = "POST"
-    data_dict = {'username': 'thisismylogin', 'password': 'notmypassword'}
-    dummy_request.POST = data_dict
-    response = login(dummy_request)
-    assert response == {'error': 'Invalid username or password.'}
+# def test_login_error(dummy_request):
+#     """Test error for login."""
+#     from mood_bot.views.default import login
+#     dummy_request.method = "POST"
+#     data_dict = {'username': 'thisismylogin', 'password': 'notmypassword'}
+#     dummy_request.POST = data_dict
+#     response = login(dummy_request)
+#     assert response == {'error': 'Invalid username or password.'}
 
 
-def test_login_redirects_to_home_view(dummy_request):
-    """Test that login redirects to the home page after login."""
-    from mood_bot.views.default import login
-    dummy_request.method = "POST"
-    data_dict = {'username': 'kurtykurt', 'password': 'kurtkurt'}
-    dummy_request.POST = data_dict
-    response = login(dummy_request)
-    assert response.status_code == 302 
+# def test_login_redirects_to_home_view(post_request):
+#     """Test that login redirects to the home page after login."""
+#     from mood_bot.views.default import login
+#     from pyramid.httpexceptions import HTTPFound
+#     data_dict = {'username': 'kurtykurt', 'password': 'kurtkurt'}
+#     post_request.POST = data_dict
+#     response = login(post_request)
+#     assert response.status_code == 302
+#     assert isinstance(response, HTTPFound)
 
 
 def test_about_view_returns_response():
-    """about view returns a Response object."""
+    """About view returns a Response object."""
     from mood_bot.views.default import about_view
     request = testing.DummyRequest()
     response = about_view(request)
@@ -129,20 +137,41 @@ def test_about_view_returns_response():
 
 
 def test_register_view_returns_response():
-    """register view returns a Response object."""
+    """Register view returns a Response object."""
     from mood_bot.views.default import register
     request = testing.DummyRequest()
     response = register(request)
     assert isinstance(response, dict)
 
 
-# def test_response_200_about_view():
-#     pass
+def test_register_user_for_login(post_request):
+    """Test that checks for user login."""
+    from mood_bot.views.default import register
+    from pyramid.httpexceptions import HTTPFound
+    data_dict = {'username': 'kurtykurt', 'password': 'kurtkurt', 'password-check': 'kurtkurt'}
+    post_request.POST = data_dict
+    response = register(post_request)
+    assert response.status_code == 302
+    assert isinstance(response, HTTPFound)
 
 
-# def test_response_200_app_view():
-#     pass
+def test_register_error(post_request):
+    """Test that login error raises for invalid registration."""
+    from mood_bot.views.default import register
+    data_dict = {'username': '', 'password': '', 'password-check': ''}
+    post_request.POST = data_dict
+    response = register(post_request)
+    assert response == {'error': 'Please provide a username and password.'}
 
 
-# def test_response_200_login():
-#     pass
+def test_register_error_for_non_matching_password(post_request):
+    """Test that login error raises for not matching password."""
+    from mood_bot.views.default import register
+    data_dict = {'username': 'kurtykurt', 'password': 'kurtkurt', 'password-check': 'kurt'}
+    post_request.POST = data_dict
+    response = register(post_request)
+    assert response == {'error': 'Passwords do not match.'}
+
+
+def test_register_error_for_user_already_in_use(post_request):
+    """Test that login error raises for invalid registration."""

@@ -23,19 +23,17 @@ class MyRoot(object):
     ]
 
 
-def check_credentials(username, password):
+def check_credentials(request):
     """Check credentials of a new user.
     Return True if it checks out; otherwise return False."""
-    engine = create_engine(os.environ['DATABASE_URL'])
-    Session = sessionmaker()
-    Session.configure(bind=engine)
-    session = Session()
-    stored_username = session.query(User.username).filter(User.username==username)
-    username_existence = session.query(stored_username.exists()).scalar()
+    username = request.POST['username']
+    password = request.POST['password']
+    stored_username = request.dbsession.query(User.username).filter(User.username==username)
+    username_existence = request.dbsession.query(stored_username.exists()).scalar()
     if not username_existence:
         return False
     stored_username = stored_username.first().username
-    stored_password = session.query(User.password).filter(User.username==stored_username).first().password
+    stored_password = request.dbsession.query(User.password).filter(User.username==stored_username).first().password
     return context.verify(password, stored_password)
 
 

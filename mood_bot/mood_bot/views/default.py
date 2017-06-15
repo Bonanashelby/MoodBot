@@ -17,13 +17,12 @@ def home_view(request):
 
 @view_config(route_name='login', renderer='../templates/login.jinja2')
 def login(request):
-    """Set the login route and view."""
     if request.method == "GET":
         return {}
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        if check_credentials(username, password):
+        # import pdb; pdb.set_trace()
+        if check_credentials(request):
+            username = request.POST['username']
             headers = remember(request, username)
             return HTTPFound(location=request.route_url('home_view'), headers=headers)
         return {'error': 'Invalid username or password.'}
