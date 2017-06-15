@@ -1,6 +1,7 @@
 """Intialize Database file."""
 
 import os
+import random
 import sys
 import transaction
 
@@ -17,14 +18,18 @@ from ..models import (
     get_session_factory,
     get_tm_session,
 )
-from mood_bot.models import Moodbot
-from mood_bot.models.mymodel import User
+from mood_bot.models import User
+from mood_bot.models.mymodel import Sentiments
 from faker import Faker
+from passlib.apps import custom_app_context as context
 
 
 fake_data = Faker()
-FAKE_DATA = [{'body': fake_data.text(), 'sentiment': fake_data.boolean(), 'user_id': fake.random_number(1)} for i in range(20)]
+FAKE_DATA = [{'body': fake_data.text(), 'sentiment': fake_data.boolean(), 'user_id': random.randint(1, 3)} for i in range(20)]
 
+FAKE_USER =[{'username': 'turbo', 'password': context.hash('maple')}, 
+            {'username': 'kitties', 'password': context.hash('fluff')},
+            {'username': 'tree', 'password': context.hash('leafy')}]
 
 def usage(argv):
     """."""
@@ -53,17 +58,23 @@ def main(argv=sys.argv):
     with transaction.manager:
         dbsession = get_tm_session(session_factory, transaction.manager)
 
+        faker_user = []
+        for fake in FAKE_USER:
+            even_newer_result = User(
+                username=fake['username'],
+                password=fake['password']
+            )
+            faker_user.append(even_newer_result)
+        dbsession.add_all(faker_user)
+
 
         faker_models = []
         for fake in FAKE_DATA:
-            newer_result = Sentiment(
+            newer_result = Sentiments(
                 body=fake['body'],
                 sentiment=fake['sentiment'],
-                fake_data=fake['user_id']
+                user_id=fake['user_id']
             )
             faker_models.append(newer_result)
         dbsession.add_all(faker_models)
-
-
-        dbsession.add(User())
 

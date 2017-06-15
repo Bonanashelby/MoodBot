@@ -12,16 +12,6 @@ from sqlalchemy import (
 from .meta import Base
 
 
-class Moodbot(Base):
-    """The class for our database structure for our results."""
-
-    __tablename__ = 'models'
-    id = Column(Integer, primary_key=True)
-    body = Column(Unicode)
-    score = Column(Float)
-    explain_score = Column(Unicode)
-
-
 class User(Base):
     """Model for our users."""
 
@@ -38,4 +28,4 @@ class Sentiments(Base):
     id = Column(Integer, primary_key=True)
     body = Column(Unicode)
     sentiment = Column(Unicode)
-    user_id = Column(Unicode, ForeignKey('users.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
