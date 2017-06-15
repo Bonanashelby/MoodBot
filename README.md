@@ -16,7 +16,7 @@
 # Team Members:
  * Casey O'Kane - okanecasey@gmail.com
  * Alex Short - ajshort2010@hotmail.com
- * Kurt Maurer - 
+ * Kurt Maurer - kurtrm@gmail.com
  * Anna Shelby - bonanashelby@gmail.com
 
 # Dependencies for Project: (these will prolly change)

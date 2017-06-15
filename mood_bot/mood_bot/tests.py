@@ -6,7 +6,8 @@ from pyramid.response import Response
 
 import pytest
 from mood_bot.models import (
-    Moodbot,
+    User,
+    Sentiments,
     get_tm_session,
 )
 from mood_bot.models.meta import Base

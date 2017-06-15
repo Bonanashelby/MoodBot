@@ -15,4 +15,10 @@
 <hr>
 <label>Negative: </label><p>{{response_dict['probability']['neg']}}%</p>
 <label>Positive: </label><p>{{response_dict['probability']['pos']}}%</p>
+<div>
+	<h1>Previous Results</h1>
+	{% for knowledge in consummate_awareness %}
+	<p>{{ knowledge }}: {{ consummate_awareness[knowledge] }}</p>
+	{% endfor %}
+</div>
 {% endblock %}

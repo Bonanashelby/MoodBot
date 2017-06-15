@@ -5,7 +5,7 @@ import zope.sqlalchemy
 
 # import or define all models here to ensure they are attached to the
 # Base.metadata prior to any initialization routines
-from mood_bot.models.mymodel import Moodbot
+from mood_bot.models.mymodel import User, Sentiments
 
 # run configure_mappers after defining all of the models to ensure
 # all relationships can be setup
