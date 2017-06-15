@@ -10,5 +10,9 @@
     </div>    
         <button type="submit" class="btn btn-success">Make me feel better!</button>
 </form>
-{{response_text}}
+<br>
+<h3>Probability</h3>
+<hr>
+<label>Negative: </label><p>{{response_dict['probability']['neg']}}%</p>
+<label>Positive: </label><p>{{response_dict['probability']['pos']}}%</p>
 {% endblock %}

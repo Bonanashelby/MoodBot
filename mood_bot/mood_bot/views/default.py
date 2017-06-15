@@ -7,7 +7,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from pyramid.security import remember, forget
 from mood_bot.security import check_credentials, hash_password
 from mood_bot.models.mymodel import Moodbot, User
-import requests
+import json
 from ..scripts.twitter import *
 
 
@@ -46,7 +46,10 @@ def app_view(request):
         url = "http://text-processing.com/api/sentiment/"
         payload = {'text': text_body}
         response = requests.request('POST', url, data=payload, headers=None)
-        return {'response_text': response.text}
+        response_dict = json.loads(response.text)
+        response_dict['probability']['neg'] = percentage(response_dict['probability']['neg'])
+        response_dict['probability']['pos'] = percentage(response_dict['probability']['pos'])
+        return {'response_dict': response_dict}
 
 
 
