@@ -6,8 +6,8 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.security import remember, forget
 from mood_bot.security import check_credentials, hash_password
-from mood_bot.models.mymodel import Moodbot, User
-import requests
+from mood_bot.models.mymodel import User, Sentiments
+import json
 from ..scripts.twitter import *
 
 
@@ -40,14 +40,32 @@ def logout(request):
 @view_config(route_name='app_view', renderer='../templates/app.jinja2')
 def app_view(request):
     if request.method == "GET":
-        return {}
+        prior_queries = (request.dbsession.query(Sentiments, User)
+                                          .join(User)
+                                          .filter(User.username == request.authenticated_userid)
+                                          .all())
+        sentient_bodies = (query[0].body for query in prior_queries)
+        sentimental_parts = (query[0].sentiment for query in prior_queries)
+        conscious_whole = dict(zip(sentient_bodies, sentimental_parts))
+        return {'consummate_awareness': conscious_whole}
     if request.method == "POST":
         text_body = request.POST['body']
         url = "http://text-processing.com/api/sentiment/"
         payload = {'text': text_body}
         response = requests.request('POST', url, data=payload, headers=None)
-        return {'response_text': response.text}
 
+        response_dict = json.loads(response.text)
+        response_dict['probability']['neg'] = percentage(response_dict['probability']['neg'])
+        response_dict['probability']['pos'] = percentage(response_dict['probability']['pos'])
+        return {'response_dict': response_dict}
+
+        sentiment_entry = Sentiments(
+            body=text_body,
+            sentiment=response.text,
+            user_id=user_query
+            )
+        request.dbsession.add(sentiment_entry)
+        return {}
 
 
 @view_config(route_name='about_view', renderer='../templates/about.jinja2')

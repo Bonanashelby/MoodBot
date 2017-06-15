@@ -51,6 +51,10 @@ class TwitterRequest(object):
             print('Error : ' + str(tweepy.TweepError))
 
 
+def percentage(number):
+        return ("%.2f" % (100 * number))
+
+
 def main(query, count=100):
     results = []
     pos_list = []
@@ -59,10 +63,10 @@ def main(query, count=100):
     tweets = api.tweet_grab(query=query, count=count)
 
     pos_tweets = [tweet for tweet in tweets if tweet['sentiment'] == 'positive']
-    results.append(100 * len(pos_tweets) / len(tweets))
+    results.append(percentage((len(pos_tweets) / len(tweets))))
     neg_tweets = [tweet for tweet in tweets if tweet['sentiment'] == 'negative']
-    results.append(100 * len(neg_tweets) / len(tweets))
-    results.append(100 * len(tweets) - len(neg_tweets) - len(pos_tweets)/len(tweets))
+    results.append(percentage((len(neg_tweets) / len(tweets))))
+    results.append(percentage(((len(tweets) - len(neg_tweets) - len(pos_tweets))/len(tweets))))
     for tweet in pos_tweets[:5]:
         pos_list.append(tweet['text'])
     for tweet in neg_tweets[:5]:
