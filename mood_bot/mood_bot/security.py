@@ -9,7 +9,6 @@ from mood_bot.models.mymodel import User
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
-import os
 
 
 class MyRoot(object):

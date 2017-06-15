@@ -27,5 +27,6 @@ class Sentiments(Base):
     __tablename__ = 'sentiments'
     id = Column(Integer, primary_key=True)
     body = Column(Unicode)
-    sentiment = Column(Unicode)
+    positive_sentiment = Column(Float)
+    negative_sentiment = Column(Float)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)

@@ -1,5 +1,4 @@
 """Default file for views in the app."""
-
 import requests
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
@@ -14,11 +13,14 @@ from ..scripts.twitter import *
 @view_config(route_name='home_view', renderer='../templates/home.jinja2')
 def home_view(request):
     """Thy willst generate an abode leaflet."""
+    if request.authenticated_userid:
+        return HTTPFound(location=request.route_url('app_view'))
     return {}
 
 
 @view_config(route_name='login', renderer='../templates/login.jinja2')
 def login(request):
+    """Log users in in order to use moodbot."""
     if request.method == "GET":
         return {}
     if request.method == "POST":
@@ -36,39 +38,49 @@ def logout(request):
     return HTTPFound(location=request.route_url('home_view'), headers=headers)
 
 
-@view_config(route_name='app_view', renderer='../templates/app.jinja2')
+@view_config(route_name='app_view', renderer='../templates/app.jinja2', permission='secret')
 def app_view(request):
-    if request.method == "GET":
-        prior_queries = (request.dbsession.query(Sentiments, User)
-                                          .join(User)
-                                          .filter(User.username == request.authenticated_userid)
-                                          .all())
-        sentient_bodies = (query[0].body for query in prior_queries)
-        sentimental_parts = (query[0].sentiment for query in prior_queries)
-        conscious_whole = dict(zip(sentient_bodies, sentimental_parts))
-        return {'consummate_awareness': conscious_whole}
+    """COnducts the bulk of our bot functionality."""
+    prior_queries = (request.dbsession.query(Sentiments, User)
+                                      .join(User)
+                                      .filter(User.username == request.authenticated_userid)
+                                      .order_by(Sentiments.id.desc())
+                                      .all())
+    sentient_bodies = (query[0].body for query in prior_queries)
+    sentimental_parts = (percentage(query[0].negative_sentiment) for query in prior_queries)
+    logical_bits = (percentage(query[0].positive_sentiment) for query in prior_queries)
+    sublime_insight = zip(sentient_bodies, sentimental_parts, logical_bits)
     if request.method == "POST":
         text_body = request.POST['body']
         url = "http://text-processing.com/api/sentiment/"
         payload = {'text': text_body}
         response = requests.request('POST', url, data=payload, headers=None)
-
         response_dict = json.loads(response.text)
-        response_dict['probability']['neg'] = percentage(response_dict['probability']['neg'])
-        response_dict['probability']['pos'] = percentage(response_dict['probability']['pos'])
-        return {'response_dict': response_dict}
-
+        user_query = request.dbsession.query(User).filter(User.username == request.authenticated_userid).one().id
         sentiment_entry = Sentiments(
             body=text_body,
-            sentiment=response.text,
+            negative_sentiment=response_dict['probability']['neg'],
+            positive_sentiment=response_dict['probability']['pos'],
             user_id=user_query
         )
         request.dbsession.add(sentiment_entry)
-        return {}
+        response_dict['probability']['neg'] = percentage(response_dict['probability']['neg'])
+        response_dict['probability']['pos'] = percentage(response_dict['probability']['pos'])
+        return {'response_dict': response_dict,
+                'text_body': text_body,
+                'consummate_awareness': sentient_bodies,
+                'conscious whole': sentimental_parts,
+                'divine oneness': logical_bits,
+                'hallowed_provenance': sublime_insight}
+    return {'consummate_awareness': sentient_bodies,
+            'conscious whole': sentimental_parts,
+            'divine oneness': logical_bits,
+            'hallowed_provenance': sublime_insight}
 
 
 @view_config(route_name='about_view', renderer='../templates/about.jinja2')
 def about_view(request):
+    """Display a page about the team."""
     return {'message': 'Info about us.'}
 
 
@@ -100,9 +112,9 @@ def register(request):
         return {'error': 'Username already in use.'}
 
 
-@view_config(route_name='twitter', renderer='../templates/twitter.jinja2')
+@view_config(route_name='twitter', renderer='../templates/twitter.jinja2', permission='secret')
 def twitter_view(request):
-    """."""
+    """Extract tweets."""
     if request.method == "GET":
         return {}
     if request.method == "POST":
