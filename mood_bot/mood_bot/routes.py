@@ -7,3 +7,4 @@ def includeme(config):
     config.add_route('logout', '/logout')
     config.add_route('security', '/security')
     config.add_route('registration', '/register')
+    config.add_route('twitter', '/twitter')
