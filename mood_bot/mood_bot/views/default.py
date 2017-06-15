@@ -1,5 +1,6 @@
 """Default file for views in the app."""
 
+import requests
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
@@ -9,23 +10,21 @@ from mood_bot.models.mymodel import Moodbot, User
 import requests
 from ..scripts.twitter import *
 
+
 @view_config(route_name='home_view', renderer='../templates/home.jinja2')
 def home_view(request):
     """Thy willst generate an abode leaflet."""
     return {}
-    if request.method == "GET":
-        return HTTPFound(location=request.route_url("app_view"), headers=None)
 
 
 @view_config(route_name='login', renderer='../templates/login.jinja2')
 def login(request):
-    """Set the login route and view."""
     if request.method == "GET":
         return {}
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        if check_credentials(username, password):
+        # import pdb; pdb.set_trace()
+        if check_credentials(request):
+            username = request.POST['username']
             headers = remember(request, username)
             return HTTPFound(location=request.route_url('home_view'), headers=headers)
         return {'error': 'Invalid username or password.'}
