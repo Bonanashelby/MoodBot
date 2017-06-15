@@ -6,10 +6,12 @@ from pyramid.response import Response
 
 import pytest
 from mood_bot.models import (
-    Moodbot,
+    User,
     get_tm_session,
 )
 from mood_bot.models.meta import Base
+from faker import Faker
+from passlib.apps import custom_app_context as context
 
 
 @pytest.fixture(scope="session")
@@ -24,7 +26,7 @@ def configuration(request):
     This configuration will persist for the entire duration of your PyTest run.
     """
     config = testing.setUp(settings={
-        'sqlalchemy.url': 'postgres://localhost:5432/moodybot'
+        'sqlalchemy.url': 'postgres://localhost:5432/test_moodybot'
     })
     config.include("mood_bot.models")
     config.include("mood_bot.routes")
@@ -47,12 +49,30 @@ def db_session(configuration, request):
     SessionFactory = configuration.registry["dbsession_factory"]
     session = SessionFactory()
     engine = session.bind
-    # Base.metadata.drop_all(engine)
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
+
+    with transaction.manager:
+        db_session = get_tm_session(SessionFactory, transaction.manager)
+
+        FAKE_USER = [
+            {'username': 'kurtykurt', 'password': context.hash('kurtkurt')},
+            {'username': 'caseyisawesome', 'password': context.hash('casey')},
+            {'username': 'ajshorty', 'password': context.hash('shorty')},
+            {'username': 'annabanana', 'password': context.hash('banana')}
+        ]
+
+        faker_user = []
+        for fake in FAKE_USER:
+            even_newer_result = User(
+                username=fake['username'],
+                password=fake['password']
+            )
+            faker_models.append(even_newer_result)
+        db_session.add_all(faker_user)
 
     def teardown():
         session.transaction.rollback()
-        Base.metadata.drop_all(engine)
 
     request.addfinalizer(teardown)
     return session
@@ -68,6 +88,29 @@ def post_request(dummy_request):
 def dummy_request(db_session):
     """Dummy request fixture."""
     return testing.DummyRequest(dbsession=db_session)
+
+
+# Creating our fake model here.
+# fake_data = Faker()
+# FAKE_DATA = [
+#     {'body': fake_data.text(),
+#         'sentiment': fake_data.boolean(),
+#         'user_id': fake_data.random_number(1)}
+#     for i in range(20)
+# ]
+
+# @pytest.fixture
+# def faker_models():
+#     """Faker models for fake data."""
+#     faker_models = []
+#     for fake in FAKE_DATA:
+#         newer_result = Sentiment(
+#             body=fake['body'],
+#             sentiment=fake['sentiment'],
+#             fake_data=fake['user_id']
+#         )
+#         faker_models.append(newer_result)
+#     db_session.add_all(faker_models)
 
 
 # @pytest.fixture(scope="session")
@@ -99,33 +142,33 @@ def test_home_view_returns_response():
     assert isinstance(response, dict)
 
 
-# def test_login_view_returns_response():
-#     """Login view returns a Response object."""
-#     from mood_bot.views.default import login
-#     request = testing.DummyRequest()
-#     response = login(request)
-#     assert isinstance(response, dict)
+def test_login_view_returns_response():
+    """Login view returns a Response object."""
+    from mood_bot.views.default import login
+    request = testing.DummyRequest()
+    response = login(request)
+    assert isinstance(response, dict)
 
 
-# def test_login_error(dummy_request):
-#     """Test error for login."""
-#     from mood_bot.views.default import login
-#     dummy_request.method = "POST"
-#     data_dict = {'username': 'thisismylogin', 'password': 'notmypassword'}
-#     dummy_request.POST = data_dict
-#     response = login(dummy_request)
-#     assert response == {'error': 'Invalid username or password.'}
+def test_login_error(dummy_request):
+    """Test error for login."""
+    from mood_bot.views.default import login
+    dummy_request.method = "POST"
+    data_dict = {'username': 'thisismylogin', 'password': 'notmypassword'}
+    dummy_request.POST = data_dict
+    response = login(dummy_request)
+    assert response == {'error': 'Invalid username or password.'}
 
 
-# def test_login_redirects_to_home_view(post_request):
-#     """Test that login redirects to the home page after login."""
-#     from mood_bot.views.default import login
-#     from pyramid.httpexceptions import HTTPFound
-#     data_dict = {'username': 'kurtykurt', 'password': 'kurtkurt'}
-#     post_request.POST = data_dict
-#     response = login(post_request)
-#     assert response.status_code == 302
-#     assert isinstance(response, HTTPFound)
+def test_login_redirects_to_home_view(post_request):
+    """Test that login redirects to the home page after login."""
+    from mood_bot.views.default import login
+    from pyramid.httpexceptions import HTTPFound
+    data_dict = {'username': 'kurtykurt', 'password': 'kurtkurt'}
+    post_request.POST = data_dict
+    response = login(post_request)
+    assert response.status_code == 302
+    assert isinstance(response, HTTPFound)
 
 
 def test_about_view_returns_response():
@@ -173,5 +216,6 @@ def test_register_error_for_non_matching_password(post_request):
     assert response == {'error': 'Passwords do not match.'}
 
 
-def test_register_error_for_user_already_in_use(post_request):
-    """Test that login error raises for invalid registration."""
+# def test_register_error_for_user_already_in_use(post_request):
+#     """Test that login error raises for invalid registration."""
+#     pass
