@@ -22,7 +22,6 @@ def login(request):
     if request.method == "GET":
         return {}
     if request.method == "POST":
-        # import pdb; pdb.set_trace()
         if check_credentials(request):
             username = request.POST['username']
             headers = remember(request, username)
@@ -63,7 +62,7 @@ def app_view(request):
             body=text_body,
             sentiment=response.text,
             user_id=user_query
-            )
+        )
         request.dbsession.add(sentiment_entry)
         return {}
 

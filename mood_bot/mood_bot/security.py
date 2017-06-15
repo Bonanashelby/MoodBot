@@ -42,7 +42,7 @@ def hash_password(password):
     return context.hash(password)
 
 
-def includeme(config):
+def includeme(config):  # pragma: no cover
     """Configuration for security."""
     auth_secret = os.environ.get('AUTH_SECRET', '')
     authn_policy = AuthTktAuthenticationPolicy(
@@ -57,4 +57,3 @@ def includeme(config):
     session_factory = SignedCookieSessionFactory(session_secret)
     config.set_session_factory(session_factory)
     config.set_default_csrf_options(require_csrf=False)
-    
