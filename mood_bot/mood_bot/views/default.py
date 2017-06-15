@@ -9,7 +9,7 @@ from mood_bot.security import check_credentials, hash_password
 from mood_bot.models.mymodel import User, Sentiments
 import json
 from ..scripts.twitter import *
-
+from ..scripts.pie_chart import generate_pie_chart
 
 @view_config(route_name='home_view', renderer='../templates/home.jinja2')
 def home_view(request):
@@ -53,13 +53,15 @@ def app_view(request):
         url = "http://text-processing.com/api/sentiment/"
         payload = {'text': text_body}
         response = requests.request('POST', url, data=payload, headers=None)
-
         response_dict = json.loads(response.text)
         response_dict['probability']['neg'] = percentage(response_dict['probability']['neg'])
         response_dict['probability']['pos'] = percentage(response_dict['probability']['pos'])
-        return {'response_dict': response_dict}
+        app_label = 'Positive', 'Negative'
+        sizes = [response_dict['probability']['pos'], response_dict['probability']['neg']]
+        response_chart = generate_pie_chart(app_label, sizes)
+        return {'response_dict': responseonse_dict, 'response_chart': response_chart}
 
-        sentiment_entry = Sentiments(
+        sentimentment_entry = Sentiments(
             body=text_body,
             sentiment=response.text,
             user_id=user_query
