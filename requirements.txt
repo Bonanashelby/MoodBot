@@ -11,6 +11,7 @@ jedi==0.10.2
 Jinja2==2.9.6
 Mako==1.0.6
 MarkupSafe==1.0
+-e git+https://github.com/Bonanashelby/MoodBot.git@e79f9d452b1544b821db1a377d4379b093052627#egg=mood_bot&subdirectory=mood_bot
 nltk==3.2.4
 oauthlib==2.0.2
 passlib==1.7.1
