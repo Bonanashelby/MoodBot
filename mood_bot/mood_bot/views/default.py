@@ -13,15 +13,17 @@ from ..scripts.twitter import *
 @view_config(route_name='home_view', renderer='../templates/home.jinja2')
 def home_view(request):
     """Thy willst generate an abode leaflet."""
+    if request.authenticated_userid:
+        return HTTPFound(location=request.route_url('app_view'))
     return {}
 
 
 @view_config(route_name='login', renderer='../templates/login.jinja2')
 def login(request):
+    """Log users in in order to use moodbot."""
     if request.method == "GET":
         return {}
     if request.method == "POST":
-        # import pdb; pdb.set_trace()
         if check_credentials(request):
             username = request.POST['username']
             headers = remember(request, username)
@@ -36,8 +38,9 @@ def logout(request):
     return HTTPFound(location=request.route_url('home_view'), headers=headers)
 
 
-@view_config(route_name='app_view', renderer='../templates/app.jinja2')
+@view_config(route_name='app_view', renderer='../templates/app.jinja2', permission='secret')
 def app_view(request):
+    """COnducts the bulk of our bot functionality."""
     prior_queries = (request.dbsession.query(Sentiments, User)
                                       .join(User)
                                       .filter(User.username == request.authenticated_userid)
@@ -77,6 +80,7 @@ def app_view(request):
 
 @view_config(route_name='about_view', renderer='../templates/about.jinja2')
 def about_view(request):
+    """Display a page about the team."""
     return {'message': 'Info about us.'}
 
 
@@ -108,9 +112,9 @@ def register(request):
         return {'error': 'Username already in use.'}
 
 
-@view_config(route_name='twitter', renderer='../templates/twitter.jinja2')
+@view_config(route_name='twitter', renderer='../templates/twitter.jinja2', permission='secret')
 def twitter_view(request):
-    """."""
+    """Extract tweets."""
     if request.method == "GET":
         return {}
     if request.method == "POST":
