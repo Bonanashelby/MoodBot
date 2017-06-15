@@ -43,8 +43,7 @@ def app_view(request):
     if request.method == "GET":
         import pdb; pdb.set_trace()
         # HERE 0530 June 14, 2017
-        prior_queries = request.dbsession.query(Sentiments).filter(request.authenticated_userid).all()
-        prior_queries = request.dbsession.query(Sentiments).filter(request.authenticated_userid).all()
+        prior_queries = request.dbsession.query(Sentiments, User).join(User).filter(User.username == request.authenticated_userid).all()
         return {'queries': prior_queries}
     if request.method == "POST":
         text_body = request.POST['body']

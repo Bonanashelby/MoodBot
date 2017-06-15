@@ -19,16 +19,11 @@ from ..models import (
 )
 from mood_bot.models import Moodbot
 from mood_bot.models.mymodel import User
+from faker import Faker
 
 
-RESULTS = [
-    {
-        "body": "This is a test of results.",
-        "score": 0.7,
-        "explain_score": "This is an explaination of the scoring results."
-
-    }
-]
+fake_data = Faker()
+FAKE_DATA = [{'body': fake_data.text(), 'sentiment': fake_data.boolean(), 'user_id': fake.random_number(1)} for i in range(20)]
 
 
 def usage(argv):
@@ -58,16 +53,17 @@ def main(argv=sys.argv):
     with transaction.manager:
         dbsession = get_tm_session(session_factory, transaction.manager)
 
-        many_models = []
-        for item in RESULTS:
-            new_result = Moodbot(
-                body=item['body'],
-                score=item['score'],
-                explain_score=item['explain_score']
-            )
-            many_models.append(new_result)
-        dbsession.add_all(many_models)
 
-        model = Moodbot()
-        dbsession.add(model)
+        faker_models = []
+        for fake in FAKE_DATA:
+            newer_result = Sentiment(
+                body=fake['body'],
+                sentiment=fake['sentiment'],
+                fake_data=fake['user_id']
+            )
+            faker_models.append(newer_result)
+        dbsession.add_all(faker_models)
+
+
         dbsession.add(User())
+
