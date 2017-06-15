@@ -58,8 +58,8 @@ def app_view(request):
         response_dict['probability']['pos'] = percentage(response_dict['probability']['pos'])
         app_label = 'Positive', 'Negative'
         sizes = [response_dict['probability']['pos'], response_dict['probability']['neg']]
-        response_chart = generate_pie_chart(app_label, sizes)
-        return {'response_dict': responseonse_dict, 'response_chart': response_chart}
+        generate_pie_chart(app_label, sizes)
+        return {'response_dict': response_dict}
 
         sentimentment_entry = Sentiments(
             body=text_body,
