@@ -11,4 +11,12 @@
         <button type="submit" class="btn btn-success">Make me feel better!</button>
 </form>
 {{response_text}}
+
+<div>
+	<h1>Previous Results</h1>
+	{% for row in queries %}
+	<p>{{ queries }}</p>
+	{% endfor %}
+</div>
+
 {% endblock %}

@@ -5,7 +5,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.security import remember, forget
 from mood_bot.security import check_credentials, hash_password
-from mood_bot.models.mymodel import Moodbot, User
+from mood_bot.models.mymodel import Moodbot, User, Sentiments
 import requests
 
 
@@ -41,14 +41,17 @@ def logout(request):
 @view_config(route_name='app_view', renderer='../templates/app.jinja2')
 def app_view(request):
     if request.method == "GET":
-        return {}
+        import pdb; pdb.set_trace()
+        # HERE 0530 June 14, 2017
+        prior_queries = request.dbsession.query(Sentiments).filter(request.authenticated_userid).all()
+        prior_queries = request.dbsession.query(Sentiments).filter(request.authenticated_userid).all()
+        return {'queries': prior_queries}
     if request.method == "POST":
         text_body = request.POST['body']
         url = "http://text-processing.com/api/sentiment/"
         payload = {'text': text_body}
         response = requests.request('POST', url, data=payload, headers=None)
         return {'response_text': response.text}
-
 
 
 @view_config(route_name='about_view', renderer='../templates/about.jinja2')

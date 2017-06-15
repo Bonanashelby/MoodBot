@@ -5,7 +5,8 @@ from sqlalchemy import (
     Index,
     Integer,
     Unicode,
-    Float
+    Float,
+    ForeignKey
 )
 
 from .meta import Base
@@ -26,5 +27,15 @@ class User(Base):
 
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
-    username =Column(Unicode, unique=True)
+    username = Column(Unicode, unique=True)
     password = Column(Unicode)
+
+
+class Sentiments(Base):
+    """Mode for storing sentiments per user."""
+
+    __tablename__ = 'sentiments'
+    id = Column(Integer, primary_key=True)
+    body = Column(Unicode)
+    sentiment = Column(Unicode)
+    user_id = Column(Unicode, ForeignKey('users.id'), nullable=False)
