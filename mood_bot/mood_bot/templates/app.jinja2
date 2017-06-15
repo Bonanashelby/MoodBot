@@ -8,9 +8,10 @@
             <textarea class="form-control" rows="6" name="body" id="body" placeholder="Here are my feelings, Mood Bot."/></textarea>
         </div>
     </div>    
-        <button type="submit" class="btn btn-success">Make me feel better!</button>
+        <button type="submit" class="btn btn-success">Tell me my mood!</button>
 </form>
 <br>
+{% if response_dict is defined %}
 <h3>Probability</h3>
 <hr>
 {% if request.method == "POST" %}
@@ -24,4 +25,5 @@
 	<p>{{ mind[0] }}: {{ mind[1] }}, {{ mind[2] }}</p>
 	{% endfor %}
 </div>
-{% endblock %}  
+{% endif %}
+{% endblock %}

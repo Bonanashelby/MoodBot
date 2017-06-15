@@ -62,7 +62,7 @@ def app_view(request):
             negative_sentiment=response_dict['probability']['neg'],
             positive_sentiment=response_dict['probability']['pos'],
             user_id=user_query
-            )
+        )
         request.dbsession.add(sentiment_entry)
         response_dict['probability']['neg'] = percentage(response_dict['probability']['neg'])
         response_dict['probability']['pos'] = percentage(response_dict['probability']['pos'])

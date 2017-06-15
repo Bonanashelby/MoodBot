@@ -57,17 +57,36 @@ def db_session(configuration, request):
         db_session = get_tm_session(SessionFactory, transaction.manager)
 
         FAKE_USER = [
-            {'username': 'kurtykurt', 'password': context.hash('kurtkurt')},
+            {'username': 'kurtykurt', 'password': context.hash('kurtkurt'), 'user_id': 1},
             {'username': 'caseyisawesome', 'password': context.hash('casey')},
             {'username': 'ajshorty', 'password': context.hash('shorty')},
             {'username': 'annabanana', 'password': context.hash('banana')}
         ]
 
+        fake_data = Faker()
+        FAKE_DATA = [
+            {'body': fake_data.text(),
+                'sentiment': fake_data.boolean(),
+                'user_id': fake_data.random_number(1)}
+            for i in range(20)
+        ]
+
+        faker_models = []
+        for fake in FAKE_DATA:
+            newer_results = Sentiments(
+                body=fake['body'],
+                sentiment=fake['sentiment'],
+                user_id=(1)
+            )
+            faker_models.append(newer_results)
+        db_session.add_all(faker_models)
+
         faker_user = []
         for fake in FAKE_USER:
             even_newer_result = User(
                 username=fake['username'],
-                password=fake['password']
+                password=fake['password'],
+                id=(1)
             )
             faker_models.append(even_newer_result)
         db_session.add_all(faker_user)
@@ -220,3 +239,37 @@ def test_register_error_for_non_matching_password(post_request):
 # def test_register_error_for_user_already_in_use(post_request):
 #     """Test that login error raises for invalid registration."""
 #     pass
+
+
+def test_twitter_main_response_is_response():
+    """Test that the main function in twitter returns response."""
+    from mood_bot.scripts.twitter import main
+    query = 'Dinosaur'
+    response = main(query)
+    assert response == response
+
+
+def test_twitter_main_tweets_is_response():
+    """Test the main function does the thing."""
+    from mood_bot.scripts.twitter import main
+    query = 'nhuntwalker'
+    response = main(query)
+    tweets = []
+    tweets.extend(response)
+    assert response == tweets
+
+
+def test_twitter_view_does_the_thing():
+    """About twitter returns a Response object."""
+    from mood_bot.views.default import twitter_view
+    request = testing.DummyRequest()
+    response = twitter_view(request)
+    assert isinstance(response, dict)
+
+
+def test_twitter_view_post_request(post_request):
+    """Test that twitter post request returns results."""
+    tweets = 'Dinosaur'
+    post_request.POST = tweets
+    response = post_request.POST
+    assert response == tweets

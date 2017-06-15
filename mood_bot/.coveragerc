@@ -1,3 +1,7 @@
 [run]
 source = mood_bot
-omit = mood_bot/test*
+omit = 
+    mood_bot/test*
+    mood_bot/scripts/initializedb.py
+    mood_bot/__init__.py
+    mood_bot/views/notfound.py
