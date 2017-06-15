@@ -24,8 +24,7 @@ requires = [
     'requests',
     'tweepy',
     'textblob',
-    're',
-    
+
 ]
 
 tests_require = [
