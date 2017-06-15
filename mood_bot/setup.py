@@ -21,7 +21,9 @@ requires = [
     'ipython',
     'psycopg2',
     'passlib',
-    'requests'
+    'requests',
+    'tweepy',
+    'textblob',
 ]
 
 tests_require = [

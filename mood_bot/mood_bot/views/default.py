@@ -1,31 +1,30 @@
 """Default file for views in the app."""
 
+import requests
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.security import remember, forget
 from mood_bot.security import check_credentials, hash_password
 from mood_bot.models.mymodel import User, Sentiments
-import requests
+import json
+from ..scripts.twitter import *
 
 
 @view_config(route_name='home_view', renderer='../templates/home.jinja2')
 def home_view(request):
     """Thy willst generate an abode leaflet."""
     return {}
-    if request.method == "GET":
-        return HTTPFound(location=request.route_url("app_view"), headers=None)
 
 
 @view_config(route_name='login', renderer='../templates/login.jinja2')
 def login(request):
-    """Set the login route and view."""
     if request.method == "GET":
         return {}
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        if check_credentials(username, password):
+        # import pdb; pdb.set_trace()
+        if check_credentials(request):
+            username = request.POST['username']
             headers = remember(request, username)
             return HTTPFound(location=request.route_url('home_view'), headers=headers)
         return {'error': 'Invalid username or password.'}
@@ -54,7 +53,11 @@ def app_view(request):
         url = "http://text-processing.com/api/sentiment/"
         payload = {'text': text_body}
         response = requests.request('POST', url, data=payload, headers=None)
-        user_query = request.dbsession.query(User).filter(User.username == request.authenticated_userid).one().id
+
+        response_dict = json.loads(response.text)
+        response_dict['probability']['neg'] = percentage(response_dict['probability']['neg'])
+        response_dict['probability']['pos'] = percentage(response_dict['probability']['pos'])
+        return {'response_dict': response_dict}
 
         sentiment_entry = Sentiments(
             body=text_body,
@@ -96,3 +99,14 @@ def register(request):
             else:
                 return {'error': 'Passwords do not match.'}
         return {'error': 'Username already in use.'}
+
+
+@view_config(route_name='twitter', renderer='../templates/twitter.jinja2')
+def twitter_view(request):
+    """."""
+    if request.method == "GET":
+        return {}
+    if request.method == "POST":
+        user_query = request.POST['subject']
+        results = main(user_query)
+        return {'results': results}
