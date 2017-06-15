@@ -1,5 +1,4 @@
 """Default file for views in the app."""
-
 import requests
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
@@ -39,34 +38,41 @@ def logout(request):
 
 @view_config(route_name='app_view', renderer='../templates/app.jinja2')
 def app_view(request):
-    if request.method == "GET":
-        prior_queries = (request.dbsession.query(Sentiments, User)
-                                          .join(User)
-                                          .filter(User.username == request.authenticated_userid)
-                                          .all())
-        sentient_bodies = (query[0].body for query in prior_queries)
-        sentimental_parts = (query[0].sentiment for query in prior_queries)
-        conscious_whole = dict(zip(sentient_bodies, sentimental_parts))
-        return {'consummate_awareness': conscious_whole}
+    prior_queries = (request.dbsession.query(Sentiments, User)
+                                      .join(User)
+                                      .filter(User.username == request.authenticated_userid)
+                                      .order_by(Sentiments.id.desc())
+                                      .all())
+    sentient_bodies = (query[0].body for query in prior_queries)
+    sentimental_parts = (percentage(query[0].negative_sentiment) for query in prior_queries)
+    logical_bits = (percentage(query[0].positive_sentiment) for query in prior_queries)
+    sublime_insight = zip(sentient_bodies, sentimental_parts, logical_bits)
     if request.method == "POST":
         text_body = request.POST['body']
         url = "http://text-processing.com/api/sentiment/"
         payload = {'text': text_body}
         response = requests.request('POST', url, data=payload, headers=None)
         response_dict = json.loads(response.text)
+        user_query = request.dbsession.query(User).filter(User.username == request.authenticated_userid).one().id
         sentiment_entry = Sentiments(
             body=text_body,
             negative_sentiment=response_dict['probability']['neg'],
             positive_sentiment=response_dict['probability']['pos'],
             user_id=user_query
             )
-
+        request.dbsession.add(sentiment_entry)
         response_dict['probability']['neg'] = percentage(response_dict['probability']['neg'])
         response_dict['probability']['pos'] = percentage(response_dict['probability']['pos'])
-        return {'response_dict': response_dict}
-
-        request.dbsession.add(sentiment_entry)
-        return {}
+        return {'response_dict': response_dict,
+                'text_body': text_body,
+                'consummate_awareness': sentient_bodies,
+                'conscious whole': sentimental_parts,
+                'divine oneness': logical_bits,
+                'hallowed_provenance': sublime_insight}
+    return {'consummate_awareness': sentient_bodies,
+            'conscious whole': sentimental_parts,
+            'divine oneness': logical_bits,
+            'hallowed_provenance': sublime_insight}
 
 
 @view_config(route_name='about_view', renderer='../templates/about.jinja2')
