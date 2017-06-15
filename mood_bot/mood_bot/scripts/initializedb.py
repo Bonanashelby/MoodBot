@@ -25,7 +25,7 @@ from passlib.apps import custom_app_context as context
 
 
 fake_data = Faker()
-FAKE_DATA = [{'body': fake_data.text(), 'sentiment': fake_data.boolean(), 'user_id': random.randint(1, 3)} for i in range(20)]
+FAKE_DATA = [{'body': fake_data.text(), 'negative_sentiment': faker.random.random(), 'positive_sentiment': faker.random.random(), 'user_id': random.randint(1, 3)} for i in range(20)]
 
 FAKE_USER =[{'username': 'turbo', 'password': context.hash('maple')}, 
             {'username': 'kitties', 'password': context.hash('fluff')},
@@ -72,7 +72,8 @@ def main(argv=sys.argv):
         for fake in FAKE_DATA:
             newer_result = Sentiments(
                 body=fake['body'],
-                sentiment=fake['sentiment'],
+                negative_sentiment=fake['negative_sentiment'],
+                positive_sentiment=fake['positive_sentiment'],
                 user_id=fake['user_id']
             )
             faker_models.append(newer_result)

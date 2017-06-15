@@ -53,17 +53,18 @@ def app_view(request):
         url = "http://text-processing.com/api/sentiment/"
         payload = {'text': text_body}
         response = requests.request('POST', url, data=payload, headers=None)
-
         response_dict = json.loads(response.text)
+        sentiment_entry = Sentiments(
+            body=text_body,
+            negative_sentiment=response_dict['probability']['neg'],
+            positive_sentiment=response_dict['probability']['pos'],
+            user_id=user_query
+            )
+
         response_dict['probability']['neg'] = percentage(response_dict['probability']['neg'])
         response_dict['probability']['pos'] = percentage(response_dict['probability']['pos'])
         return {'response_dict': response_dict}
 
-        sentiment_entry = Sentiments(
-            body=text_body,
-            sentiment=response.text,
-            user_id=user_query
-            )
         request.dbsession.add(sentiment_entry)
         return {}
 
