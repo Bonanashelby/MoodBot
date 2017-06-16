@@ -1,7 +1,7 @@
 {% extends"layout.jinja2" %}
 {% block content %}
 <h1>Tell me your thoughts and feelings...</h1>
-<p>Give Mood Bot your feelings and thoughts, and it will return what it thinks you're feeling as well as a link to enhance your mood. Tell it whatever you want!</p>
+<p>Give Mood Bot your feelings and thoughts, and it will return what it thinks you're feeling. Tell it whatever you want!</p>
   <form method="POST">
     <div class="row">
         <div class="form-group">
@@ -20,12 +20,21 @@
         <label>Positive: </label><p>{{response_dict['probability']['pos']}}%</p>
     {% endif %}
 {% endif %}
-{% if hallowed_provenance is defined %}
     <div>
-    	<h1>Previous Results</h1>
+        <h3>Previous Results</h3>
+        <hr>
     	{% for mind in hallowed_provenance %}
-    	<p>{{ mind[0] }}: {{ mind[1] }}, {{ mind[2] }}</p>
+    	<label>Text:</label>
+        {% if mind[0][50] is defined %}
+            <p>{{ mind[0][0:49] }}...</p>
+        {% else %}
+            <p>{{ mind[0][0:49] }}</p>
+        {% endif %}
+        <label>Positive:</label>
+        <p>{{ mind[1] }}%</p>
+        <label>Negative:</label>
+        <p>{{ mind[2] }}%</p>
+        <hr>
     	{% endfor %}
     </div>
-{% endif %}
 {% endblock %}
