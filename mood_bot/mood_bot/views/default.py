@@ -14,8 +14,8 @@ from ..scripts.twitter import *
 def home_view(request):
     """Thy willst generate an abode leaflet."""
     if request.authenticated_userid:
-        return HTTPFound(location=request.route_url('app_view'))
-    return {}
+        return HTTPFound(location=request.route_url('app_view'))  # pragma no cover
+    return {} # pragma no cover
 
 
 @view_config(route_name='login', renderer='../templates/login.jinja2')
@@ -27,7 +27,7 @@ def login(request):
         if check_credentials(request):
             username = request.POST['username']
             headers = remember(request, username)
-            return HTTPFound(location=request.route_url('home_view'), headers=headers)
+            return HTTPFound(location=request.route_url('home_view'), headers=headers) 
         return {'error': 'Invalid username or password.'}
 
 

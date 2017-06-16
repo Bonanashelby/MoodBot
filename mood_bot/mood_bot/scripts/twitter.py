@@ -16,7 +16,7 @@ class TwitterRequest(object):
             self.auth = OAuthHandler(ckey, csecret)
             self.auth.set_access_token(atoken, asecret)
             self.api = tweepy.API(self.auth)
-        except:
+        except:  # pragma no cover
             print('Error: Authentication failed')
 
     def tweet_prep(self, tweet):
@@ -47,7 +47,7 @@ class TwitterRequest(object):
                 else:
                     tweets.append(tweets_parsed)
             return tweets
-        except tweepy.TweepError:
+        except tweepy.TweepError: # pragma no cover
             print('Error : ' + str(tweepy.TweepError))
 
 

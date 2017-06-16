@@ -28,7 +28,7 @@ def configuration(request):
     This configuration will persist for the entire duration of your PyTest run.
     """
     config = testing.setUp(settings={
-        'sqlalchemy.url': 'postgres://localhost:5432/foobot'
+        'sqlalchemy.url': 'postgres://localhost:5432/test_moodybot'
     })
     config.include("mood_bot.models")
     config.include("mood_bot.routes")
@@ -190,11 +190,6 @@ def test_register_error_for_non_matching_password(dummy_request):
     dummy_request.POST = data_dict
     response = register(dummy_request)
     assert response == {'error': 'Passwords do not match.'}
-
-
-# def test_register_error_for_user_already_in_use(post_request):
-#     """Test that login error raises for invalid registration."""
-#     pass
 
 
 def test_twitter_main_response_is_response():
