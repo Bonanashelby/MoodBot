@@ -41,7 +41,7 @@ def hash_password(password):
     return context.hash(password)
 
 
-def includeme(config):  # pragma: no cover
+def includeme(config):  
     """Configuration for security."""
     auth_secret = os.environ.get('AUTH_SECRET', '')
     authn_policy = AuthTktAuthenticationPolicy(
