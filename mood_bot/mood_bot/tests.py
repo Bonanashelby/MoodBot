@@ -28,10 +28,11 @@ def configuration(request):
     This configuration will persist for the entire duration of your PyTest run.
     """
     config = testing.setUp(settings={
-        'sqlalchemy.url': 'postgres://kurtrm:hofbrau@localhost:5432/test_moodybot'
+        'sqlalchemy.url': 'postgres://localhost:5432/test_moodybot'
     })
     config.include("mood_bot.models")
     config.include("mood_bot.routes")
+    config.include("mood_bot.security")
 
     def teardown():
         testing.tearDown()
@@ -51,14 +52,13 @@ def db_session(configuration, request):
     SessionFactory = configuration.registry["dbsession_factory"]
     session = SessionFactory()
     engine = session.bind
-    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
     with transaction.manager:
         db_session = get_tm_session(SessionFactory, transaction.manager)
 
         FAKE_USER = [
-            {'username': 'kurtykurt', 'password': context.hash('kurtkurt'), 'user_id': 1},
+            {'username': 'kurtykurt', 'password': context.hash('kurtkurt')},
             {'username': 'caseyisawesome', 'password': context.hash('casey')},
             {'username': 'ajshorty', 'password': context.hash('shorty')},
             {'username': 'annabanana', 'password': context.hash('banana')}
@@ -67,9 +67,9 @@ def db_session(configuration, request):
         fake_data = Faker()
         FAKE_DATA = [
             {'body': fake_data.text(),
-            'negative_sentiment': fake_data.random.random(),
-            'positive_sentiment': fake_data.random.random(),
-            'user_id': random.randint(1, 3)}
+                'negative_sentiment': fake_data.random.random(),
+                'positive_sentiment': fake_data.random.random(),
+                'user_id': random.randint(1, 3)}
             for i in range(20)
         ]
 
@@ -93,7 +93,6 @@ def db_session(configuration, request):
             faker_models.append(newer_results)
         db_session.add_all(faker_models)
 
-
     def teardown():
         Base.metadata.drop_all(engine)
         session.transaction.rollback()
@@ -114,50 +113,6 @@ def dummy_request(db_session):
     return testing.DummyRequest(dbsession=db_session)
 
 
-# Creating our fake model here.
-# fake_data = Faker()
-# FAKE_DATA = [
-#     {'body': fake_data.text(),
-#         'sentiment': fake_data.boolean(),
-#         'user_id': fake_data.random_number(1)}
-#     for i in range(20)
-# ]
-
-# @pytest.fixture
-# def faker_models():
-#     """Faker models for fake data."""
-#     faker_models = []
-#     for fake in FAKE_DATA:
-#         newer_result = Sentiment(
-#             body=fake['body'],
-#             sentiment=fake['sentiment'],
-#             fake_data=fake['user_id']
-#         )
-#         faker_models.append(newer_result)
-#     db_session.add_all(faker_models)
-
-
-# @pytest.fixture(scope="session")
-# def testapp(request):
-#     """Testapp."""
-#     from webtest import TestApp
-#     from mood_bot import main
-
-#     app = main({}, **{"sqlalchemy.url": "postgres:///moodybot"})
-#     testapp = TestApp(app)
-
-#     SessionFactory = app.registry["dbsession_factory"]
-#     engine = SessionFactory().bind
-#     Base.metadata.create_all(bind=engine)
-
-#     def tearDown():
-#     Base.metadata.drop_all(bind=engine)
-
-#     request.addfinalizer(tearDown)
-
-#     return testapp
-
-
 def test_home_view_returns_response():
     """Home view returns a Response object."""
     from mood_bot.views.default import home_view
@@ -176,7 +131,6 @@ def test_login_view_returns_response():
 
 def test_login_error(dummy_request):
     """Test error for login."""
-    import pdb; pdb.set_trace()
     from mood_bot.views.default import login
     dummy_request.method = "POST"
     data_dict = {'username': 'thisismylogin', 'password': 'notmypassword'}
@@ -239,11 +193,6 @@ def test_register_error_for_non_matching_password(dummy_request):
     dummy_request.POST = data_dict
     response = register(dummy_request)
     assert response == {'error': 'Passwords do not match.'}
-
-
-# def test_register_error_for_user_already_in_use(post_request):
-#     """Test that login error raises for invalid registration."""
-#     pass
 
 
 def test_twitter_main_response_is_response():
