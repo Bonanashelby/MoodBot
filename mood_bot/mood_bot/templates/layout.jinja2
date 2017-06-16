@@ -18,10 +18,9 @@
 			<a class="navbar-brand text-muted" href="/">Mood Bot</a>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav navbar-right">
-				  <li><a href="/">Home</a></li>
-				  <li><a href="/twitter">Twitter</a></li>
 				  <li><a href="/about">About Us</a></li>
 			      {% if request.authenticated_userid %}
+				  <li><a href="/twitter">Twitter</a></li>
 			      <li><a class="blog-nav-item" href="/logout">Logout</a></li>
 			      {% else %}
 			      <li><a href="/login">Login</a></li>
