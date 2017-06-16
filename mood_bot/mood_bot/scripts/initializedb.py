@@ -20,16 +20,16 @@ from ..models import (
 )
 from mood_bot.models import User
 from mood_bot.models.mymodel import Sentiments
-from faker import Faker
+# from faker import Faker
 from passlib.apps import custom_app_context as context
 
 
-fake_data = Faker()
-FAKE_DATA = [{'body': fake_data.text(), 'negative_sentiment': fake_data.random.random(), 'positive_sentiment': fake_data.random.random(), 'user_id': random.randint(1, 3)} for i in range(20)]
+# fake_data = Faker()
+# FAKE_DATA = [{'body': fake_data.text(), 'negative_sentiment': fake_data.random.random(), 'positive_sentiment': fake_data.random.random(), 'user_id': random.randint(1, 3)} for i in range(20)]
 
-FAKE_USER =[{'username': 'turbo', 'password': context.hash('maple')}, 
-            {'username': 'kitties', 'password': context.hash('fluff')},
-            {'username': 'tree', 'password': context.hash('leafy')}]
+# FAKE_USER =[{'username': 'turbo', 'password': context.hash('maple')}, 
+#             {'username': 'kitties', 'password': context.hash('fluff')},
+#             {'username': 'tree', 'password': context.hash('leafy')}]
 
 def usage(argv):
     """."""
@@ -55,27 +55,27 @@ def main(argv=sys.argv):
 
     session_factory = get_session_factory(engine)
 
-    with transaction.manager:
-        dbsession = get_tm_session(session_factory, transaction.manager)
+    # with transaction.manager:
+    #     dbsession = get_tm_session(session_factory, transaction.manager)
 
-        faker_user = []
-        for fake in FAKE_USER:
-            even_newer_result = User(
-                username=fake['username'],
-                password=fake['password']
-            )
-            faker_user.append(even_newer_result)
-        dbsession.add_all(faker_user)
+    #     faker_user = []
+    #     for fake in FAKE_USER:
+    #         even_newer_result = User(
+    #             username=fake['username'],
+    #             password=fake['password']
+    #         )
+    #         faker_user.append(even_newer_result)
+    #     dbsession.add_all(faker_user)
 
 
-        faker_models = []
-        for fake in FAKE_DATA:
-            newer_result = Sentiments(
-                body=fake['body'],
-                negative_sentiment=fake['negative_sentiment'],
-                positive_sentiment=fake['positive_sentiment'],
-                user_id=fake['user_id']
-            )
-            faker_models.append(newer_result)
-        dbsession.add_all(faker_models)
+    #     faker_models = []
+    #     for fake in FAKE_DATA:
+    #         newer_result = Sentiments(
+    #             body=fake['body'],
+    #             negative_sentiment=fake['negative_sentiment'],
+    #             positive_sentiment=fake['positive_sentiment'],
+    #             user_id=fake['user_id']
+    #         )
+    #         faker_models.append(newer_result)
+    #     dbsession.add_all(faker_models)
 
