@@ -95,7 +95,6 @@ def db_session(configuration, request):
 
 
     def teardown():
-        Base.metadata.drop_all(engine)
         session.transaction.rollback()
 
     request.addfinalizer(teardown)
@@ -176,7 +175,6 @@ def test_login_view_returns_response():
 
 def test_login_error(dummy_request):
     """Test error for login."""
-    import pdb; pdb.set_trace()
     from mood_bot.views.default import login
     dummy_request.method = "POST"
     data_dict = {'username': 'thisismylogin', 'password': 'notmypassword'}
