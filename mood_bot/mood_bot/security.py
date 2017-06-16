@@ -9,6 +9,7 @@ from mood_bot.models.mymodel import User
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
+import os
 
 
 class MyRoot(object):
@@ -41,16 +42,16 @@ def hash_password(password):
     return context.hash(password)
 
 
-def includeme(config):  # pragma: no cover
+def includeme(config):
     """Configuration for security."""
     auth_secret = os.environ.get('AUTH_SECRET', '')
     authn_policy = AuthTktAuthenticationPolicy(
         secret=auth_secret,
         hashalg='sha512'
     )
-    config.set_authentication_policy(authn_policy)
     authz_policy = ACLAuthorizationPolicy()
     config.set_authorization_policy(authz_policy)
+    config.set_authentication_policy(authn_policy)
     config.set_root_factory(MyRoot)
     session_secret = os.environ.get('SESSION_SECRET', '')
     session_factory = SignedCookieSessionFactory(session_secret)

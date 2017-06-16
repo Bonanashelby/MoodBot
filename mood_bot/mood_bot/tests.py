@@ -28,10 +28,11 @@ def configuration(request):
     This configuration will persist for the entire duration of your PyTest run.
     """
     config = testing.setUp(settings={
-        'sqlalchemy.url': 'postgres://kurtrm:hofbrau@localhost:5432/test_moodybot'
+        'sqlalchemy.url': 'postgres://localhost:5432/foobot'
     })
     config.include("mood_bot.models")
     config.include("mood_bot.routes")
+    config.include("mood_bot.security")
 
     def teardown():
         testing.tearDown()
@@ -51,52 +52,47 @@ def db_session(configuration, request):
     SessionFactory = configuration.registry["dbsession_factory"]
     session = SessionFactory()
     engine = session.bind
-    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
-    with transaction.manager:
-        db_session = get_tm_session(SessionFactory, transaction.manager)
+    FAKE_USER = [
+        {'username': 'kurtykurt', 'password': context.hash('kurtkurt')},
+        {'username': 'caseyisawesome', 'password': context.hash('casey')},
+        {'username': 'ajshorty', 'password': context.hash('shorty')},
+        {'username': 'annabanana', 'password': context.hash('banana')}
+    ]
 
-        FAKE_USER = [
-            {'username': 'kurtykurt', 'password': context.hash('kurtkurt'), 'user_id': 1},
-            {'username': 'caseyisawesome', 'password': context.hash('casey')},
-            {'username': 'ajshorty', 'password': context.hash('shorty')},
-            {'username': 'annabanana', 'password': context.hash('banana')}
-        ]
-
-        fake_data = Faker()
-        FAKE_DATA = [
-            {'body': fake_data.text(),
+    fake_data = Faker()
+    FAKE_DATA = [
+        {'body': fake_data.text(),
             'negative_sentiment': fake_data.random.random(),
             'positive_sentiment': fake_data.random.random(),
             'user_id': random.randint(1, 3)}
-            for i in range(20)
-        ]
+        for i in range(20)
+    ]
 
-        faker_user = []
-        for fake in FAKE_USER:
-            even_newer_result = User(
-                username=fake['username'],
-                password=fake['password'],
-            )
-            faker_user.append(even_newer_result)
-        db_session.add_all(faker_user)
+    faker_user = []
+    for fake in FAKE_USER:
+        even_newer_result = User(
+            username=fake['username'],
+            password=fake['password'],
+        )
+        faker_user.append(even_newer_result)
+    session.add_all(faker_user)
 
-        faker_models = []
-        for fake in FAKE_DATA:
-            newer_results = Sentiments(
-                body=fake['body'],
-                negative_sentiment=fake['negative_sentiment'],
-                positive_sentiment=fake['positive_sentiment'],
-                user_id=fake['user_id']
-            )
-            faker_models.append(newer_results)
-        db_session.add_all(faker_models)
-
+    faker_models = []
+    for fake in FAKE_DATA:
+        newer_results = Sentiments(
+            body=fake['body'],
+            negative_sentiment=fake['negative_sentiment'],
+            positive_sentiment=fake['positive_sentiment'],
+            user_id=fake['user_id']
+        )
+        faker_models.append(newer_results)
+    session.add_all(faker_models)
 
     def teardown():
-        Base.metadata.drop_all(engine)
         session.transaction.rollback()
+        Base.metadata.drop_all(engine)
 
     request.addfinalizer(teardown)
     return session
@@ -112,50 +108,6 @@ def post_request(dummy_request):
 def dummy_request(db_session):
     """Dummy request fixture."""
     return testing.DummyRequest(dbsession=db_session)
-
-
-# Creating our fake model here.
-# fake_data = Faker()
-# FAKE_DATA = [
-#     {'body': fake_data.text(),
-#         'sentiment': fake_data.boolean(),
-#         'user_id': fake_data.random_number(1)}
-#     for i in range(20)
-# ]
-
-# @pytest.fixture
-# def faker_models():
-#     """Faker models for fake data."""
-#     faker_models = []
-#     for fake in FAKE_DATA:
-#         newer_result = Sentiment(
-#             body=fake['body'],
-#             sentiment=fake['sentiment'],
-#             fake_data=fake['user_id']
-#         )
-#         faker_models.append(newer_result)
-#     db_session.add_all(faker_models)
-
-
-# @pytest.fixture(scope="session")
-# def testapp(request):
-#     """Testapp."""
-#     from webtest import TestApp
-#     from mood_bot import main
-
-#     app = main({}, **{"sqlalchemy.url": "postgres:///moodybot"})
-#     testapp = TestApp(app)
-
-#     SessionFactory = app.registry["dbsession_factory"]
-#     engine = SessionFactory().bind
-#     Base.metadata.create_all(bind=engine)
-
-#     def tearDown():
-#     Base.metadata.drop_all(bind=engine)
-
-#     request.addfinalizer(tearDown)
-
-#     return testapp
 
 
 def test_home_view_returns_response():
@@ -176,7 +128,6 @@ def test_login_view_returns_response():
 
 def test_login_error(dummy_request):
     """Test error for login."""
-    import pdb; pdb.set_trace()
     from mood_bot.views.default import login
     dummy_request.method = "POST"
     data_dict = {'username': 'thisismylogin', 'password': 'notmypassword'}
@@ -212,15 +163,15 @@ def test_register_view_returns_response():
     assert isinstance(response, dict)
 
 
-def test_register_user_for_login(dummy_request):
-    """Test that checks for user login."""
-    from mood_bot.views.default import register
-    from pyramid.httpexceptions import HTTPFound
-    data_dict = {'username': 'kurtykurt', 'password': 'kurtkurt', 'password-check': 'kurtkurt'}
-    dummy_request.POST = data_dict
-    response = register(dummy_request)
-    assert response.status_code == 302
-    assert isinstance(response, HTTPFound)
+# def test_register_user_for_login(dummy_request):
+#     """Test that checks for user login."""
+#     from mood_bot.views.default import register
+#     from pyramid.httpexceptions import HTTPFound
+#     data_dict = {'username': 'kurtykurt', 'password': 'kurtkurt', 'password-check': 'kurtkurt'}
+#     dummy_request.POST = data_dict
+#     response = register(dummy_request)
+#     assert response.status_code == 302
+#     assert isinstance(response, HTTPFound)
 
 
 def test_register_error(dummy_request):
