@@ -12,18 +12,20 @@
 </form>
 <br>
 {% if response_dict is defined %}
-<h3>Probability</h3>
-<hr>
-{% if request.method == "POST" %}
-<label>Text: </label><p> {{ text_body }} </p>
-<label>Negative: </label><p>{{response_dict['probability']['neg']}}%</p>
-<label>Positive: </label><p>{{response_dict['probability']['pos']}}%</p>
+    <h3>Probability</h3>
+    <hr>
+    {% if request.method == "POST" %}
+        <label>Text: </label><p> {{ text_body }} </p>
+        <label>Negative: </label><p>{{response_dict['probability']['neg']}}%</p>
+        <label>Positive: </label><p>{{response_dict['probability']['pos']}}%</p>
+    {% endif %}
 {% endif %}
-<div>
-	<h1>Previous Results</h1>
-	{% for mind in hallowed_provenance %}
-	<p>{{ mind[0] }}: {{ mind[1] }}, {{ mind[2] }}</p>
-	{% endfor %}
-</div>
+{% if hallowed_provenance is defined %}
+    <div>
+    	<h1>Previous Results</h1>
+    	{% for mind in hallowed_provenance %}
+    	<p>{{ mind[0] }}: {{ mind[1] }}, {{ mind[2] }}</p>
+    	{% endfor %}
+    </div>
 {% endif %}
 {% endblock %}
