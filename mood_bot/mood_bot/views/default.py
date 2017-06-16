@@ -108,7 +108,7 @@ def register(request):
                     detail='Registration successful!'
                 )
             else:
-                return {'error': 'Passwords do not match.'}
+                return HTTPNotFound({'error': 'Passwords do not match.'})
         return {'error': 'Username already in use.'}
 
 
