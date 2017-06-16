@@ -5,7 +5,22 @@
         <input type="text" name="subject" id="subject" placeholder="Type in subject.">
         <input type="submit" value="Submit">
     </form>
+    <br>
     {% if results is defined %}
-        {{results}}
+        <h3>Sentiment Analysis</h3><hr>
+        <label>Positive: </label><p>{{results[0]}}%</p>
+        <label>Negative: </label><p>{{results[1]}}%</p>
+        <label>Neutral: </label><p>{{results[2]}}%</p>
+        <hr>
+        <label>Top Five Positive Tweets</label>
+        {% for results in results[3] %}
+            <p>{{results}}</p>
+        {% endfor %}
+        <hr>
+        <label>Top Five Negative Tweets</label>
+        {% for results in results[4] %}
+            <p>{{results}}</p>
+        {% endfor %}
+        <hr>
     {% endif %}
 {% endblock %}
