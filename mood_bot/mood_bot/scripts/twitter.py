@@ -1,3 +1,4 @@
+"""The script for making an api request for user-defined subject api calls."""
 import re
 import os
 import tweepy
@@ -6,8 +7,10 @@ from textblob import TextBlob
 
 
 class TwitterRequest(object):
-    """docstring for TwitterRequest"""
+    """The class that holds the api requests, formats the returned text and parses it for sentiment."""
+
     def __init__(self):
+        """Set up the twitter class api request."""
         ckey = "GqrX1h40eg2mZNOiDC40lbwZj"
         csecret = os.environ['CON_SECRET']
         atoken = "854074011231305728-rJolfVKlr5w7F8TaoYMct7ClxLjeC8G"
@@ -20,9 +23,11 @@ class TwitterRequest(object):
             print('Error: Authentication failed')
 
     def tweet_prep(self, tweet):
+        """Strip the returned tweet of any special characters for sentiment analysis."""
         return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t]) | (\w+:\/\/\S+)", " ", tweet).split())
 
     def tweet_sentiment(self, tweet):
+        """Label sentiment parsed tweets with the appropriate value."""
         analysis = TextBlob(self.tweet_prep(tweet))
         if analysis.sentiment.polarity > 0:
             return 'positive'
@@ -32,6 +37,7 @@ class TwitterRequest(object):
             return 'negative'
 
     def tweet_grab(self, query, count):
+        """Make the api call, gather the tweets, attach sentiment, scan for retweets of identical material, return tweets in list of dicts."""
         tweets = []
         try:
             tweets_fetched = self.api.search(q=query, count=count)
@@ -47,21 +53,22 @@ class TwitterRequest(object):
                 else:
                     tweets.append(tweets_parsed)
             return tweets
-        except tweepy.TweepError: # pragma no cover
+        except tweepy.TweepError:  # pragma no cover
             print('Error : ' + str(tweepy.TweepError))
 
 
 def percentage(number):
-        return ("%.2f" % (100 * number))
+    """Make a reasonable percentage for the sentiment values."""
+    return ("%.2f" % (100 * number))
 
 
 def main(query, count=100):
+    """The main function calls all neccessary functions to return an subject based tweet analysis."""
     results = []
     pos_list = []
     neg_list = []
     api = TwitterRequest()
     tweets = api.tweet_grab(query=query, count=count)
-
     pos_tweets = [tweet for tweet in tweets if tweet['sentiment'] == 'positive']
     results.append(percentage((len(pos_tweets) / len(tweets))))
     neg_tweets = [tweet for tweet in tweets if tweet['sentiment'] == 'negative']
