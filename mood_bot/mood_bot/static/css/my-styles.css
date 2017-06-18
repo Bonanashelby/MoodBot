@@ -1,0 +1,10 @@
+body {
+	padding-top: 70px;
+}
+.container {
+	max-width: 1000px;
+}
+/*img.img-responsive {
+    max-height: 480px;
+    max-width: 640px;
+}*/

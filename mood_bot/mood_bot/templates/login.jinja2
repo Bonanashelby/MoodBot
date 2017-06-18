@@ -1,0 +1,25 @@
+{% extends "layout.jinja2" %}
+{% block content %}
+
+{{ error }}
+
+<h2>Login</h2>
+<p>New user? Register <a href="/register">here.</a></p>
+<form method="POST">
+    <div class="row">
+        <div class="form-group col-xs-4">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" name="username" id="username" required/>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-xs-4">
+            <label for="passwor">Password</label>
+            <input type="password" class="form-control" name="password" pattern="[\w]+" required/>
+        </div>
+    </div>
+    
+        <button type="submit" class="btn">Login</button>
+</form>
+{% endblock %}

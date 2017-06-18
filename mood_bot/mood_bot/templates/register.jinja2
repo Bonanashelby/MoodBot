@@ -1,0 +1,42 @@
+{% extends 'layout.jinja2' %}
+{% block content %}
+{{ error }}
+
+<h2>Registration</h2>
+<p>Already signed up? <a href="/login">Sign in!</a></p>
+<ul>Password must contain the following:
+<li>At least 16 characters, maximum 32</li>
+<li>At least 2 non-consecutive, non-repeating prime numbers</li>
+<li>At least 2 unique characters (!@#$%^*)</li>
+<li>No words found in the English, French, German, or Urban dictionary</li>
+<li>Must not contain your username or social security number</li>
+<li>Must not be the same as previous passwords or any other user's password</li>
+<li>Note: passwords must be reset weekly</li>
+<li>Incorrect passwords (a maximum of 1 attempt) result in 72 hour lockdowns</li>
+<li>Just kidding.</li>
+</ul>
+<form method="POST">
+    <div class="row">
+        <div class="form-group col-xs-4">
+            <label for="username">Enter your desired username:</label>
+            <input type="text" class="form-control" name="username" id="username" required/>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-xs-4">
+            <label for="password">Enter your password:</label>
+            <input type="password" class="form-control" name="password" pattern="[\w]+" required/>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-xs-4">
+            <label for="password-check">Enter your password again:</label>
+            <input type="password" class="form-control" name="password-check" pattern="[\w]+" required/>
+        </div>
+    </div>
+    
+    <button type="submit" class="btn">Register</button>
+</form>
+{% endblock %}

@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+cd mood_bot
+python setup.py develop
+initializedb production.ini
+python runapp.py
