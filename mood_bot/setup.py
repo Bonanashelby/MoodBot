@@ -1,3 +1,4 @@
+"""The setup file for Moodbot, defining the required packages and console commands."""
 import os
 
 from setuptools import setup, find_packages

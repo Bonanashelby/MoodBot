@@ -32,6 +32,10 @@
 * ipython
 * pyramid_ipython
 * psycopg2
+* passlib
+* requests
+* tweepy
+* textblob
 
 ## Test Requires:
 * pytest
@@ -41,3 +45,8 @@
 
 # GitHub Repository 
 [GitHub Repository for MoodBot](https://github.com/Bonanashelby/MoodBot)
+
+#Outside Resources:
+*Twitter
+*NLTK- Corpora
+*text-processing.com- Sentiment Analysis
