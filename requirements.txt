@@ -59,7 +59,7 @@ tweepy==3.5.0
 urllib3==1.21.1
 venusian==1.1.0
 virtualenv==15.1.0
-waitress==1.0.2
+waitress==1.4.1
 wcwidth==0.1.7
 WebOb==1.7.2
 WebTest==2.0.27
