@@ -29,7 +29,7 @@ psycopg2==2.7.1
 ptyprocess==0.5.1
 py==1.4.34
 pycurl==7.43.0
-Pygments==2.2.0
+Pygments==2.7.4
 pyparsing==2.2.0
 pyramid==1.8.4
 pyramid-debugtoolbar==4.1
